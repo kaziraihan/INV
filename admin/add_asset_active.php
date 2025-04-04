@@ -1,236 +1,163 @@
 
-<?php include "includes/header.php"; ?>
-<!--search here -->
-<?php include "includes/search.php";  ?>
-
-<!--search here -->
-
-<?php // $delere_role = $user_data['delete_role']; ?>
-
-<!-- Update asset list starts  -->
-
 <?php
-if (isset($_GET['id'])) {
-    $asset_id = intval($_GET['id']);
-        // Fetch asset details
-    $query = "SELECT * FROM asset_list WHERE id = ?";
-    $stmt = $connection->prepare($query);
+include "includes/header.php";
+include "includes/search.php";
+
+// Fetch asset by ID
+function fetchAssetById($connection, $asset_id) {
+    $stmt = $connection->prepare("SELECT * FROM asset_list WHERE id = ?");
     $stmt->bind_param("i", $asset_id);
     $stmt->execute();
-    $result = $stmt->get_result();
+    return $stmt->get_result()->fetch_assoc();
+}
 
-    if ($result->num_rows > 0) {
-        $asset = $result->fetch_assoc();
-    } else {
-        echo "Asset not found!";
+// Get dropdown options
+function getOptions($connection, $table, $id_field, $name_field) {
+    $options = [];
+    $result = mysqli_query($connection, "SELECT * FROM $table");
+    while ($row = mysqli_fetch_assoc($result)) {
+        $options[] = $row[$name_field];
+    }
+    return $options;
+}
+
+// Update asset
+function updateAsset($connection, $data, $asset_id) {
+    $sql = "UPDATE asset_list SET 
+        AssetCode = ?, Company = ?, qty = ?, assettype = ?, AssetDescription = ?, 
+        PurchaseDate = ?, DepnStartPeriod = ?, DepnEndPeriod = ?, Disposed = ?, 
+        SN = ?, Supplier = ?, Remark = ?, Usedby = ?, usedbyid = ?, 
+        usedbydept = ?, assigndate = ? WHERE id = ?";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("ssisssssssssssssi",
+        $data['AssetCode'], $data['Company'], $data['qty'], $data['assettype'],
+        $data['AssetDescription'], $data['PurchaseDate'], $data['DepnStartPeriod'],
+        $data['DepnEndPeriod'], $data['Disposed'], $data['SN'], $data['Supplier'],
+        $data['Remark'], $data['Usedby'], $data['usedbyid'],
+        $data['usedbydept'], $data['assigndate'], $asset_id
+    );
+
+    return $stmt->execute();
+}
+
+// Handle update submission
+if (isset($_GET['id'])) {
+    $asset_id = intval($_GET['id']);
+    $asset = fetchAssetById($connection, $asset_id);
+
+    if (!$asset) {
+        echo "<div class='alert alert-danger'>Asset not found!</div>";
         exit;
-    }  ?>
-    <div class="container-fluid">
-        <!-- Content Row -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card shadow mb-4">
-                    <div class="card-body">
-                        <form action="" method="POST">
-                            <div class="row">
-                                <!-- Asset Code -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="AssetCode">Asset Code: *</label>
-                                    <input type="text" id="AssetCode" name="AssetCode" class="form-control" value="<?php echo htmlspecialchars($asset['AssetCode']); ?>" required>
-                                </div>
+    }
 
-                                <!-- Company -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="Company">Company:</label>
-                                    <input type="text" id="Company" name="Company" class="form-control" value="<?php echo htmlspecialchars($asset['Company']); ?>" required>
-                                </div>
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_asset'])) {
+        $data = array_map('htmlspecialchars', $_POST);
+        if (updateAsset($connection, $data, $asset_id)) {
+            header("Location: add_asset_active.php");
+            exit;
+        } else {
+            echo "<div class='alert alert-danger'>Error updating asset.</div>";
+        }
+    }
 
-                                <!-- Quantity -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="qty">Quantity:*</label>
-                                    <input type="number" id="qty" name="qty" class="form-control" value="<?php echo htmlspecialchars($asset['qty']); ?>" required>
-                                </div>
+    // Dropdown values
+    $categories = getOptions($connection, "categories", "category_id", "category_name");
+    $suppliers = getOptions($connection, "tag", "tag_id", "tag_name");
+?>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
 
-                                <!-- Asset Type -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="assettype">Asset Type</label>
-                                    <select class="form-control" name="assettype" required>
-                                        <option><?php echo htmlspecialchars($asset['assettype']); ?></option>
-                                        <?php 
-                                        $query = "SELECT * FROM categories";
-                                        $post_tag = mysqli_query($connection, $query);
-                                        while( $row = mysqli_fetch_assoc($post_tag) ){
-                                            $category_id    = $row['category_id'];
-                                            $category_name  = $row['category_name'];
-                                            ?>  
-                                            
-                                            <option value="<?php echo $category_name; ?>"><?php if ($category_id){
-                                                echo    $category_name; } ?></option>
-                                            <?php } ?>                      
-                                        </select>
-                                    </div>
-                                    
-                                    
-                                </div>
-                                <div class="row">
+                            <?php
+                            // Generate form input fields
+                            function input($label, $name, $value, $type = 'text', $required = true) {
+                                echo "
+                                <div class='col-md-6 mb-3'>
+                                    <label for='$name'>$label" . ($required ? ": *" : "") . "</label>
+                                    <input type='$type' id='$name' name='$name' class='form-control' value='" . htmlspecialchars($value) . "'" . ($required ? " required" : "") . ">
+                                </div>";
+                            }
 
-                                    <!-- Description -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="AssetDescription">Description:*</label>
-                                        <input type="text" id="AssetDescription" name="AssetDescription" class="form-control" value="<?php echo htmlspecialchars($asset['AssetDescription']); ?>" required>
-                                    </div>
+                            input("Asset Code", "AssetCode", $asset['AssetCode']);
+                            input("Company", "Company", $asset['Company']);
+                            input("Quantity", "qty", $asset['qty'], "number");
+                            input("Description", "AssetDescription", $asset['AssetDescription']);
+                            input("Purchase Date", "PurchaseDate", $asset['PurchaseDate'], "date", false);
+                            input("Depreciation Start", "DepnStartPeriod", $asset['DepnStartPeriod'], "date", false);
+                            input("Depreciation End", "DepnEndPeriod", $asset['DepnEndPeriod'], "date", false);
+                            input("Serial Number", "SN", $asset['SN'], "text", false);
+                            input("Remark", "Remark", $asset['Remark'], "text", false);
+                            ?>
 
-                                    <!-- Purchase Date -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="PurchaseDate">Purchase Date:*</label>
-                                        <input type="date" id="PurchaseDate" name="PurchaseDate" class="form-control" value="<?php echo htmlspecialchars($asset['PurchaseDate']); ?>">
-                                    </div>
-
-                                    <!-- Depreciation Start Period -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="DepnStartPeriod">Depreciation Start Period:</label>
-                                        <input type="date" id="DepnStartPeriod" name="DepnStartPeriod" class="form-control" value="<?php echo htmlspecialchars($asset['DepnStartPeriod']); ?>">
-                                    </div>
-
-                                    <!-- Depreciation End Period -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="DepnEndPeriod">Depreciation End Period:</label>
-                                        <input type="date" id="DepnEndPeriod" name="DepnEndPeriod" class="form-control" value="<?php echo htmlspecialchars($asset['DepnEndPeriod']); ?>">
-                                    </div>
-
-                                    <!-- Disposed -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="Disposed">Disposed:</label>
-                                        <select id="Disposed" name="Disposed" class="form-control">
-                                            <option value="0" <?php echo $asset['Disposed'] == 0 ? 'selected' : ''; ?>>Active</option>
-                                            <option value="1" <?php echo $asset['Disposed'] == 1 ? 'selected' : ''; ?>>Disposed</option>
-                                            <option value="9" <?php echo $asset['Disposed'] == 9 ? 'selected' : ''; ?>>Archived</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Serial Number -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="SN">Serial Number:*</label>
-                                        <input type="text" id="SN" name="SN" class="form-control" value="<?php echo htmlspecialchars($asset['SN']); ?>" >
-                                    </div>
-
-                                    <!-- Supplier -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="assettype">Supplier:*</label>
-                                        <select class="form-control" name="Supplier" required>
-                                            <option><?php echo htmlspecialchars($asset['Supplier']); ?></option>
-                                            <?php 
-                                            $query = "SELECT * FROM tag";
-                                            $post_tag = mysqli_query($connection, $query);
-                                            while( $row = mysqli_fetch_assoc($post_tag) ){
-                                                $tag_id    = $row['tag_id'];
-                                                $tag_name  = $row['tag_name'];
-                                                ?>  
-                                                
-                                                <option value="<?php echo $tag_name; ?>"><?php if ($tag_id){
-                                                    echo    $tag_name; } ?></option>
-                                                <?php } ?>                      
-                                            </select>
-                                        </div>
-                                        
-                                        <!-- Remark -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="Remark">Remark:</label>
-                                            <input type="text" id="Remark" name="Remark" class="form-control" value="<?php echo htmlspecialchars($asset['Remark']); ?>">
-                                        </div>
-                                        
-                                        <!-- will keep hide -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="Remark">Used by:</label><?php echo htmlspecialchars($asset['Usedby']); ?>
-                                            <input hidden type="text" id="Usedby" name="Usedby" class="form-control" value="<?php echo htmlspecialchars($asset['Usedby']); ?>">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label for="Remark">Assign date:</label><?php echo htmlspecialchars($asset['assigndate']); ?>
-                                            <input hidden type="text" id="assigndate" name="assigndate" class="form-control" value="<?php echo htmlspecialchars($asset['assigndate']); ?>">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label for="Remark">User dept:</label><?php echo htmlspecialchars($asset['usedbydept']); ?>
-                                            <input hidden type="text" id="usedbydept" name="usedbydept" class="form-control" value="<?php echo htmlspecialchars($asset['usedbydept']); ?>">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <!--label for="Remark">Usedbyid:</label-->
-                                            <input hidden type="text" id="Usedbyid" name="Usedbyid" class="form-control" value="<?php echo htmlspecialchars($asset['usedbyid']); ?>">
-                                        </div>
-                                        <!-- will keep hide -->          
-                                        
-                                        
-                                        
-                                    </div>
-                                    
-                                    <div class="row  m-2 d-flex justify-content-between">
-                                    <button type="submit" name="update_asset" class="btn btn-primary col-md-4 mr-4">Update Asset</button>
-                                    <a href="add_asset_active.php" class="btn btn-secondary col-md-4 ml-4">Cancel</a>
-                                
-                                    </div> 
-                                </form>
+                            <!-- Asset Type Dropdown -->
+                            <div class="col-md-6 mb-3">
+                                <label for="assettype">Asset Type *</label>
+                                <select name="assettype" class="form-control" required>
+                                    <option value="<?php echo htmlspecialchars($asset['assettype']); ?>" selected><?php echo htmlspecialchars($asset['assettype']); ?></option>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <?php if ($cat !== $asset['assettype']) { ?>
+                                            <option value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
+                                        <?php } ?>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
+
+                            <!-- Disposed Dropdown -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Disposed">Disposed</label>
+                                <select name="Disposed" class="form-control">
+                                    <option value="0" <?= $asset['Disposed'] == 0 ? 'selected' : '' ?>>Active</option>
+                                    <option value="1" <?= $asset['Disposed'] == 1 ? 'selected' : '' ?>>Disposed</option>
+                                    <option value="9" <?= $asset['Disposed'] == 9 ? 'selected' : '' ?>>Archived</option>
+                                </select>
+                            </div>
+
+                            <!-- Supplier Dropdown -->
+                            <div class="col-md-6 mb-3">
+                                <label for="Supplier">Supplier *</label>
+                                <select name="Supplier" class="form-control" required>
+                                    <option value="<?php echo htmlspecialchars($asset['Supplier']); ?>" selected><?php echo htmlspecialchars($asset['Supplier']); ?></option>
+                                    <?php foreach ($suppliers as $sup): ?>
+                                        <?php if ($sup !== $asset['Supplier']) { ?>
+                                            <option value="<?php echo $sup; ?>"><?php echo $sup; ?></option>
+                                        <?php } ?>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Hidden Fields -->
+                            <?php
+                            $hiddenFields = ['Usedby', 'usedbyid', 'usedbydept', 'assigndate'];
+                            foreach ($hiddenFields as $field) {
+                                echo "<input type='hidden' name='$field' value='" . htmlspecialchars($asset[$field]) . "'>";
+                            }
+                            ?>
+
                         </div>
-                    </div>
+
+                        <div class="row m-2 d-flex justify-content-between">
+                            <button type="submit" name="update_asset" class="btn btn-primary col-md-4 mr-4">Update Asset</button>
+                            <a href="add_asset_active.php" class="btn btn-secondary col-md-4 ml-4">Cancel</a>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-
-            <?php 
-
-        } else {
-             // echo "Invalid Request!";
-             //exit;
-        }
-
-             // Handle form submission
-        if (isset($_POST['update_asset'])) {
-            $asset_code = $_POST['AssetCode'];
-            $company = $_POST['Company'];
-            $qty = $_POST['qty'];
-            $asset_type = $_POST['assettype'];
-            $description = $_POST['AssetDescription'];
-            $purchase_date = $_POST['PurchaseDate'];
-            $depn_start = $_POST['DepnStartPeriod'];
-            $depn_end = $_POST['DepnEndPeriod'];
-            $disposed = $_POST['Disposed'];
-            $sn = $_POST['SN'];
-            $supplier = $_POST['Supplier'];
-            $remark = $_POST['Remark'];
-            $used_by = $_POST['Usedby'];
-            $used_by_id = $_POST['usedbyid'];
-            $used_by_dept = $_POST['usedbydept'];
-            $assingdate = $_POST['assigndate'];
-
-        // Update query
-            $update_query = "UPDATE asset_list SET AssetCode = ?, Company = ?, qty = ?, assettype = ?, AssetDescription = ?, PurchaseDate = ?, DepnStartPeriod = ?, DepnEndPeriod = ?, Disposed = ?, SN = ?, Supplier = ?, Remark = ?, Usedby = ?, usedbyid = ?, usedbydept = ?, assigndate = ?  WHERE id = ?";
-            $stmt = $connection->prepare($update_query);
-            $stmt->bind_param("ssisssssssssssssi", $asset_code, $company, $qty, $asset_type, $description, $purchase_date, $depn_start, $depn_end, $disposed, $sn, $supplier, $remark, $used_by,  $used_by_id,  $used_by_dept,  $assingdate, $asset_id);
-
-            if ($stmt->execute()) {
-                header("Location: add_asset_active.php");
-                exit;
-            } else {
-                echo "Error updating asset: " . $stmt->error;
-            }
-        }
-        ?>
-
-        <!-- asset update ends   -->
+<?php
+}
+?>
 
 
 
-
-
-
-
-
-
-
-
-        <!-- asset list showing starts  -->
+<!-- asset list showing starts  -->
 
 
         <!-- Begin Page Content -->
@@ -305,323 +232,277 @@ if (isset($_GET['id'])) {
         
 
 
+<!-- Asset List Table -->
+<div class="table-responsive">
+    <table id="sortableAssetTable" class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <?php
+                $headers = [
+                    "#", "AssetCode", "Company", "Qty", "AssetType", "AssetDscpn", 
+                    "PurchaseDate", "DepnStartPeriod", "DepnEndPeriod", 
+                    "Active?", "S/N", "Supplier", "Remark", "UsedBy", "Actions"
+                ];
+                foreach ($headers as $index => $header) {
+                    echo "<th scope='col' onclick='sortTable($index)'>" . htmlspecialchars($header) . "</th>";
+                }
+                ?>
+            </tr>
+        </thead>
+        <tbody style="font-size: 1rem;">
+            <?php
+            $i = 1;
+            $filter = $_GET['filter'] ?? 'all';
 
-                <div class="">
-                    <div class="">
-                        <table id="sortableAssetTable"  class="table table-responsive table-bordered">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col" onclick="sortTable(0)">#</th>
-                                    <th scope="col" onclick="sortTable(1)">AssetCode</th>
-                                    <th scope="col" onclick="sortTable(2)">Company</th>
-                                    <th scope="col" onclick="sortTable(3)">Qty</th>
-                                    <th scope="col" onclick="sortTable(4)">AssetType</th>
-                                    <th scope="col" onclick="sortTable(5)">AssetDscpn</th>
-                                    <th scope="col" onclick="sortTable(6)">PurchaseDate</th>
-                                    <th scope="col" onclick="sortTable(7)">DepnStartPeriod</th>
-                                    <th scope="col" onclick="sortTable(8)">DepnEndPeriod</th>
-                                    <th scope="col" onclick="sortTable(9)">Active?</th>
-                                    <th scope="col" onclick="sortTable(10)">S/N</th>
-                                    <th scope="col" onclick="sortTable(11)">Supplier</th>
-                                    <th scope="col" onclick="sortTable(12)">Remark</th>
-                                    <th scope="col" onclick="sortTable(13)">UsedBy</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody style="font-size: 1rem;">
-                                <?php
-                                $i = 1;
-                               
-                                $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+            $conditions = [
+                'desktop' => "assettype = 'Desktop'",
+                'laptop' => "assettype = 'Laptop'",
+                'mobile' => "assettype = 'Mobile'",
+                'unused_desktop' => "assettype = 'Desktop' AND usedbyid = 0",
+                'unused_laptop' => "assettype = 'Laptop' AND usedbyid = 0"
+            ];
 
-                                // Define query based on filter
-                                switch ($filter) {
-                                    case 'desktop':
-                                        $query = "SELECT * FROM asset_list WHERE Disposed = 0 AND assettype = 'Desktop'";
-                                        break;
-                                    case 'laptop':
-                                        $query = "SELECT * FROM asset_list WHERE Disposed = 0 AND assettype = 'Laptop'";
-                                        break;
-                                    case 'mobile':
-                                        $query = "SELECT * FROM asset_list WHERE Disposed = 0 AND assettype = 'Mobile'";
-                                        break;
-                                    case 'unused_desktop':
-                                        $query = "SELECT * FROM asset_list WHERE Disposed = 0 AND assettype = 'Desktop' AND usedbyid = 0";
-                                        break;
-                                    case 'unused_laptop':
-                                        $query = "SELECT * FROM asset_list WHERE Disposed = 0 AND assettype = 'Laptop' AND usedbyid = 0";
-                                        break;
-                                    default:
-                                        $query = "SELECT * FROM asset_list WHERE Disposed = 0"; // Show all assets by default
-                                }
-                                $result = mysqli_query($connection, $query);
+            $where = "WHERE Disposed = 0";
+            if (array_key_exists($filter, $conditions)) {
+                $where .= " AND " . $conditions[$filter];
+            }
 
-                                while ($row = mysqli_fetch_assoc($result)) { ?>
-                                    
-                                    <tr>
-                                        <td><?php echo $i++; ?></td>
-                                        <td>
-                                            <a class="" href="view_asset.php?id=<?php echo $row['id']; ?>">
-                                               <?php echo $row['AssetCode']; ?>
-                                           </a>
-                                       </td>
-                                       <td><?php echo $row['Company']; ?></td>
-                                       <td><?php echo $row['qty']; ?></td>
-                                       <td><?php echo $row['assettype']; ?></td>
-                                       <td><?php echo $row['AssetDescription']; ?></td>
-                                       <td><?php echo $row['PurchaseDate']; ?></td>
-                                       <td><?php echo $row['DepnStartPeriod']; ?></td>
-                                       <td><?php echo $row['DepnEndPeriod']; ?></td>
-                                       <td><?php if ( $row['Disposed']== 0){  echo 'Active';} elseif ( $row['Disposed']== 9){  echo 'Archived';} else {echo $row['Disposed']; }; ?> </td>      
-                                       <td><?php echo $row['SN']; ?></td>
-                                       <td><?php echo $row['Supplier']; ?></td>
-                                       <td><?php echo $row['Remark']; ?></td>
-                                       <td>
-                                        <!-- thisis the user view showing URL -->
-                                        <a href=" managecustomer_active.php?update= <?php echo empty($row['usedbyid'])? '': $row['usedbyid']; ?>">
-                                        <!-- this is the actual usedby name showing-->
-                                        <?php echo empty($row['Usedby']) ? 'Unused' : $row['Usedby']; ?>
-                                        </a>
-                                        </td>
-                                       <?php if ($update_role == 1){ ?>
-                                        <td>
-                                            <a href="add_asset_active.php?id=<?php echo $row['id']; ?>">
-                                                <button class="btn btn-info btn-sm">Update</button>
-                                            </a>
-                                        </td>
-                                    <?php } ?>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                 
+            $query = "SELECT * FROM asset_list $where";
+            $result = mysqli_query($connection, $query);
 
-                </div>
-            </div>
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<tr>";
+                echo "<td>" . $i++ . "</td>";
+                echo "<td><a href='view_asset.php?id=" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['AssetCode']) . "</a></td>";
+                echo "<td>" . htmlspecialchars($row['Company']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['qty']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['assettype']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['AssetDescription']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['PurchaseDate']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['DepnStartPeriod']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['DepnEndPeriod']) . "</td>";
+
+                $status = $row['Disposed'] == 0 ? "Active" : ($row['Disposed'] == 9 ? "Archived" : htmlspecialchars($row['Disposed']));
+                echo "<td>$status</td>";
+
+                echo "<td>" . htmlspecialchars($row['SN']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['Supplier']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['Remark']) . "</td>";
+
+                $usedById = htmlspecialchars($row['usedbyid']);
+                $usedByName = !empty($row['Usedby']) ? htmlspecialchars($row['Usedby']) : "Unused";
+                echo "<td><a href='managecustomer_active.php?update=$usedById'>$usedByName</a></td>";
+
+                echo "<td>";
+                if ($update_role == 1) {
+                    echo "<a href='add_asset_active.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-info btn-sm'>Update</a>";
+                }
+                echo "</td>";
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
 
 <!-- JavaScript for Sorting -->
 <script>
-    function sortTable(columnIndex) {
-        const table = document.getElementById("sortableAssetTable");
-        const tbody = table.querySelector("tbody");
-        const rows = Array.from(tbody.querySelectorAll("tr"));
+function sortTable(columnIndex) {
+    const table = document.getElementById("sortableAssetTable");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const header = table.querySelectorAll("th")[columnIndex];
+    const isAscending = !header.classList.contains("sort-asc");
 
-        // Determine sorting direction
-        const header = table.querySelectorAll("th")[columnIndex];
-        const isAscending = !header.classList.contains("sort-asc");
+    // Reset header classes
+    table.querySelectorAll("th").forEach(th => th.classList.remove("sort-asc", "sort-desc"));
 
-        // Remove sorting indicators from all headers
-        table.querySelectorAll("th").forEach(th => th.classList.remove("sort-asc", "sort-desc"));
+    rows.sort((a, b) => {
+        const textA = a.children[columnIndex].textContent.trim();
+        const textB = b.children[columnIndex].textContent.trim();
 
-        // Sort rows
-        rows.sort((rowA, rowB) => {
-            const cellA = rowA.children[columnIndex].textContent.trim();
-            const cellB = rowB.children[columnIndex].textContent.trim();
+        const valA = isNaN(textA) ? textA.toLowerCase() : parseFloat(textA);
+        const valB = isNaN(textB) ? textB.toLowerCase() : parseFloat(textB);
 
-            // Compare as numbers if possible, otherwise as strings
-            const compare = isNaN(cellA) || isNaN(cellB)
-            ? cellA.localeCompare(cellB)
-            : parseFloat(cellA) - parseFloat(cellB);
+        return isAscending ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+    });
 
-            return isAscending ? compare : -compare;
-        });
-
-        // Append sorted rows back to the table body
-        rows.forEach(row => tbody.appendChild(row));
-
-        // Add sorting direction class
-        header.classList.add(isAscending ? "sort-asc" : "sort-desc");
-    }
+    rows.forEach(row => tbody.appendChild(row));
+    header.classList.add(isAscending ? "sort-asc" : "sort-desc");
+}
 </script>
 
 <style>
     th {
         cursor: pointer;
+        user-select: none;
     }
     th.sort-asc::after {
         content: " ▲";
+        font-size: 0.8rem;
     }
     th.sort-desc::after {
         content: " ▼";
+        font-size: 0.8rem;
     }
 </style>
 
 
 
-</div>
-<!-- User table end -->
-</div>
-<!-- asset list showing Ends  -->
 
 
 
-
-
-<!-- asset entry showing starts  -->
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Button to trigger modal -->
-
     <?php
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $AssetCode = mysqli_real_escape_string($connection, $_POST['AssetCode']);
-        $Company = mysqli_real_escape_string($connection, $_POST['Company']);
-        $qty = (int)$_POST['qty'];
-        $assettype = mysqli_real_escape_string($connection, $_POST['assettype']);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $AssetCode        = mysqli_real_escape_string($connection, $_POST['AssetCode']);
+        $Company          = mysqli_real_escape_string($connection, $_POST['Company']);
+        $qty              = (int)$_POST['qty'];
+        $assettype        = mysqli_real_escape_string($connection, $_POST['assettype']);
         $AssetDescription = mysqli_real_escape_string($connection, $_POST['AssetDescription']);
-        $PurchaseDate = mysqli_real_escape_string($connection, $_POST['PurchaseDate']);
-        $DepnStartPeriod = mysqli_real_escape_string($connection, $_POST['DepnStartPeriod']);
-        $DepnEndPeriod = mysqli_real_escape_string($connection, $_POST['DepnEndPeriod']);
-        $Disposed = mysqli_real_escape_string($connection, $_POST['Disposed']);
-        $SN = mysqli_real_escape_string($connection, $_POST['SN']);
-        $Supplier = mysqli_real_escape_string($connection, $_POST['Supplier']);
-        $Remark = mysqli_real_escape_string($connection, $_POST['Remark']);
-        $UsedBy = mysqli_real_escape_string($connection, $_POST['UsedBy']);
+        $PurchaseDate     = mysqli_real_escape_string($connection, $_POST['PurchaseDate']);
+        $DepnStartPeriod  = mysqli_real_escape_string($connection, $_POST['DepnStartPeriod']);
+        $DepnEndPeriod    = mysqli_real_escape_string($connection, $_POST['DepnEndPeriod']);
+        $Disposed         = mysqli_real_escape_string($connection, $_POST['Disposed']);
+        $SN               = mysqli_real_escape_string($connection, $_POST['SN']);
+        $Supplier         = mysqli_real_escape_string($connection, $_POST['Supplier']);
+        $Remark           = mysqli_real_escape_string($connection, $_POST['Remark']);
+        $UsedBy           = mysqli_real_escape_string($connection, $_POST['UsedBy']);
 
-            // Insert query
-        $query = "INSERT INTO asset_list (AssetCode, Company, qty, assettype, AssetDescription, PurchaseDate, DepnStartPeriod, DepnEndPeriod, Disposed, Remark, SN, Supplier, UsedBy) 
-        VALUES ('$AssetCode', '$Company', $qty, '$assettype', '$AssetDescription', '$PurchaseDate', '$DepnStartPeriod', '$DepnEndPeriod', '$Disposed', '$Remark','$SN', '$Supplier', '$UsedBy')";
+        $query = "INSERT INTO asset_list 
+        (AssetCode, Company, qty, assettype, AssetDescription, PurchaseDate, DepnStartPeriod, DepnEndPeriod, Disposed, Remark, SN, Supplier, UsedBy) 
+        VALUES 
+        ('$AssetCode', '$Company', $qty, '$assettype', '$AssetDescription', '$PurchaseDate', '$DepnStartPeriod', '$DepnEndPeriod', '$Disposed', '$Remark','$SN', '$Supplier', '$UsedBy')";
 
         if (mysqli_query($connection, $query)) {
-            echo "Asset information added successfully!";
-                //sleep(3); 
             header("Location: add_asset_active.php");
+            exit();
         } else {
-            echo "Error: " . $query . "<br>" . mysqli_error($connection);
+            echo "<div class='alert alert-danger'>Error: " . mysqli_error($connection) . "</div>";
         }
-
-            // Close the connection
         mysqli_close($connection);
     }
     ?>
 
-    <!-- Modal structure -->
+    <!-- Asset Modal -->
     <div class="modal fade" id="assetModal" tabindex="-1" role="dialog" aria-labelledby="assetModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
+            <form action="add_asset.php" method="post" class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="assetModalLabel">Add New Customer</h5> 
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title">Add New Asset</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
+
                 <div class="modal-body">
-                    <!-- Form inside modal -->
-                    <form action="add_asset.php" method="post">
-                        <div class="form-group">
-                            <label>Asset Code *</label>
-                            <input class="form-control" type="text" id="AssetCode" name="AssetCode" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="Company">Company *</label>
-                            <select class="form-control" id="Company" name="Company" required>
-                                <option value="NSBD">NSBD</option>
-                                <option value="BDBD">BDBD</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="qty">Quantity *</label>
-                            <input class="form-control" type="number" id="qty" name="qty" value="1" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="assettype">Asset Type *</label>
-                            <select class="form-control" name="assettype" required="">
-                                <option>None</option>
-                                <?php 
-                                $query = "SELECT * FROM categories";
-                                $post_tag = mysqli_query($connection, $query);
-                                while( $row = mysqli_fetch_assoc($post_tag) ){
-                                    $category_id    = $row['category_id'];
-                                    $category_name  = $row['category_name'];
-                                    ?>  
-                                    <option value="<?php echo $category_name; ?>"><?php if ($category_id){
-                                        echo    $category_name; } ?></option>
-                                    <?php } ?>                      
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="AssetDescription">Asset Description</label>
-                                <textarea class="form-control" id="AssetDescription" name="AssetDescription" required=""></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="PurchaseDate">Purchase Date *</label>
-                                <input class="form-control" type="date" id="PurchaseDate" name="PurchaseDate" required="">
-                            </div>
-                            <div class="form-group">
-                                <label for="DepnStartPeriod">Depreciation Start Period</label>
-                                <input class="form-control" type="date" id="DepnStartPeriod" name="DepnStartPeriod">
-                            </div>
-                            <div class="form-group">
-                                <label for="DepnEndPeriod">Depreciation End Period</label>
-                                <input class="form-control" type="date" id="DepnEndPeriod" name="DepnEndPeriod">
-                            </div>
-                            <div class="form-group">
-                                <label for="Disposed">Disposed (Yes/No)</label>
-                                <select class="form-control" id="Disposed" name="Disposed" required="">
-                                    <option value="0">No</option>
-                                    <option value="Yes">Yes</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="Remark">Remark</label>
-                                <textarea class="form-control" id="Remark" name="Remark"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="SN">SN</label>
-                                <input class="form-control" type="text" id="SN" name="SN" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Supplier">Supplier</label>
-                                <select class="form-control" name="Supplier" required="">
-                                    <option>None</option>
-                                    <?php 
-                                    $query = "SELECT * FROM tag";
-                                    $post_tag = mysqli_query($connection, $query);
-                                    while( $row = mysqli_fetch_assoc($post_tag) ){
-                                        $tag_id    = $row['tag_id'];
-                                        $tag_name  = $row['tag_name'];
-                                        ?>  
-                                        <option value="<?php echo $tag_name; ?>"><?php if ($tag_id){
-                                            echo    $tag_name; } ?></option>
-                                        <?php } ?>                      
-                                    </select>
-                                </div>
-                                <!-- Make inactive from here -->
-                                <div class="form-group">
-                                    <label for="UsedBy">Used By</label>
-                                    <select class="form-control" name="UsedBy" >
-                                        <option>None</option>
-                                        <?php 
-                                        $query = "SELECT * FROM customer";
-                                        $post_tag = mysqli_query($connection, $query);
-                                        while( $row = mysqli_fetch_assoc($post_tag) ){
-                                            $id    = $row['id'];
-                                            $cus_name  = $row['cus_name'];
-                                            
-                                            ?>  
-                                            <option value="<?php echo $cus_name; ?>"><?php if ($id){
-                                                echo    $cus_name; } ?></option>
-                                            <?php } ?>                      
-                                        </select>
-                                    </div>
-                                    <!-- Make inactive from here -->
-
-                                    <input class="btn btn-primary" type="submit" value="Submit">
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label for="AssetCode">Asset Code *</label>
+                        <input type="text" name="AssetCode" id="AssetCode" class="form-control" required>
                     </div>
-                </div>   
-            </div>
+
+                    <div class="form-group">
+                        <label for="Company">Company *</label>
+                        <select name="Company" id="Company" class="form-control" required>
+                            <option value="">Select Company</option>
+                            <option value="NSBD">NSBD</option>
+                            <option value="BDBD">BDBD</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qty">Quantity *</label>
+                        <input type="number" name="qty" id="qty" class="form-control" value="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assettype">Asset Type *</label>
+                        <select name="assettype" id="assettype" class="form-control" required>
+                            <option value="">Select Type</option>
+                            <?php 
+                            $result = mysqli_query($connection, "SELECT * FROM categories");
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='{$row['category_name']}'>{$row['category_name']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="AssetDescription">Asset Description</label>
+                        <textarea name="AssetDescription" id="AssetDescription" class="form-control" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PurchaseDate">Purchase Date *</label>
+                        <input type="date" name="PurchaseDate" id="PurchaseDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DepnStartPeriod">Depreciation Start Period</label>
+                        <input type="date" name="DepnStartPeriod" id="DepnStartPeriod" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DepnEndPeriod">Depreciation End Period</label>
+                        <input type="date" name="DepnEndPeriod" id="DepnEndPeriod" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Disposed">Disposed</label>
+                        <select name="Disposed" id="Disposed" class="form-control" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SN">Serial Number *</label>
+                        <input type="text" name="SN" id="SN" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Supplier">Supplier *</label>
+                        <select name="Supplier" id="Supplier" class="form-control" required>
+                            <option value="">Select Supplier</option>
+                            <?php 
+                            $result = mysqli_query($connection, "SELECT * FROM tag");
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='{$row['tag_name']}'>{$row['tag_name']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="UsedBy">Used By</label>
+                        <select name="UsedBy" id="UsedBy" class="form-control">
+                            <option value="">None</option>
+                            <?php 
+                            $result = mysqli_query($connection, "SELECT * FROM customer");
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='{$row['cus_name']}'>{$row['cus_name']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Remark">Remark</label>
+                        <textarea name="Remark" id="Remark" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
-        <!-- End Modal -->
-        <!-- asset entry ends  -->
+    </div>
 
+</div>
 
-
-        <?php include "includes/footer.php"; ?>
+<?php include "includes/footer.php"; ?>
