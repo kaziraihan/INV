@@ -18,9 +18,12 @@ $the_role = $_SESSION['role'];
         </div>
     </div>
 
-    <!-- Dashboard Cards -->
-    <div class="row mt-4">
-        <?php
+     <!-- Dashboard Cards -->
+     <div class="col-md-12">
+     <div class="card shadow mb-4">
+     <div class="card-body">
+       <div class="d-flex"> 
+            <?php
         function fetchTotal($connection, $sql) {
             $result = $connection->query($sql); 
             return ($result->num_rows > 0) ? $result->fetch_assoc()['total_qty'] : 0;
@@ -66,22 +69,28 @@ $the_role = $_SESSION['role'];
                 </div>
             </div>
         <?php endforeach; ?>
+        </div>
+        </div>
+        </div>
     </div>
+    
 
-    <!-- Department-wise Breakdown Table -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-primary">
-                    <h6 class="m-0 font-weight-bold text-white">Department-Wise Device Distribution</h6>
-                </div>
-                <div class="card-body">
-                    <?php include "includes/table.php"; ?>
-                </div>
+     <!-- Department-wise Breakdown Table -->
+    
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-primary">
+                <h6 class="m-0 font-weight-bold text-white">Department-Wise Device Distribution</h6>
+            </div>
+            <div class="card-body">
+                <?php include "includes/chart.php"; ?>
+                
             </div>
         </div>
     </div>
+    
 
+   
 </div>
 <!-- End of Container -->
 
