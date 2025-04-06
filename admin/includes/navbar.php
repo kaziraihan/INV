@@ -17,123 +17,99 @@ while($row=mysqli_fetch_assoc($select_theme)){
    </a>
 
    <!-- Divider -->
-   <hr class="sidebar-divider my-0">
+  <hr class="sidebar-divider my-0">
 
-   <!-- Nav Item - Dashboard -->
-   <li class="nav-item active">
-    <a class="nav-link" href="dashboard.php">
-      <i class="fas fa-fw fa-tachometer-alt"></i>
-      <span>Dashboard</span></a>
-    </li>
+<!-- Dashboard -->
+<li class="nav-item active">
+  <a class="nav-link" href="dashboard.php">
+    <i class="fas fa-fw fa-tachometer-alt"></i>
+    <span>Dashboard</span></a>
+</li>
 
-    <!-- Nav Item - Dashboard -->
-    
+<hr class="sidebar-divider">
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-     
+<!-- Asset -->
+<li class="nav-item">
+  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsefive2" aria-expanded="true" aria-controls="collapsefive2">
+    <i class="fas fa-boxes"></i>
+    <span>Asset</span>
+  </a>
+  <div id="collapsefive2" class="collapse" aria-labelledby="headingfour" data-parent="#accordionSidebar">
+    <div class="bg-white py-2 collapse-inner rounded">
+      <a class="collapse-item" href="add_asset_active.php"><i class="fas fa-tools mr-2"></i>Manage Asset</a>
     </div>
-    
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsefive2" aria-expanded="true" aria-controls="collapsefive2">
-        <i class="fas fa-fw fa-cog"></i>
-        <span>Asset</span>
-      </a>
-      <div id="collapsefive2" class="collapse" aria-labelledby="headingfour" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
+  </div>
+</li>
 
-          <a class="collapse-item" href="add_asset_active.php">Manage Asset</a>
-        </div>
-      </div>
-    </li>
-    <!-- Nav Item - Pages Collapse Menu -->
-    
-    <!-- Nav Item - Pages Collapse Menu -->
-    
-<!-- Nav Item - Pages Collapse Menu -->
+<!-- Management -->
 <li class="nav-item">
   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseParent" aria-expanded="true" aria-controls="collapseParent">
-    <i class="fas fa-fw fa-cog"></i>
+    <i class="fas fa-tasks"></i>
     <span>Management</span>
   </a>
   <div id="collapseParent" class="collapse" aria-labelledby="headingParent" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-      
-      <!-- Direct Links -->
-      <a class="collapse-item" href="managecategory.php">Categories</a>
-      <a class="collapse-item" href="brand.php">Brands</a>
-      <a class="collapse-item" href="managetag.php">Suppliers</a>
-      <a class="collapse-item" href="managedepartment.php">Departments</a>
+      <a class="collapse-item" href="managecategory.php"><i class="fas fa-tags mr-2"></i>Categories</a>
+      <a class="collapse-item" href="brand.php"><i class="fas fa-industry mr-2"></i>Brands</a>
+      <a class="collapse-item" href="managetag.php"><i class="fas fa-truck mr-2"></i>Suppliers</a>
+      <a class="collapse-item" href="managedepartment.php"><i class="fas fa-building mr-2"></i>Departments</a>
     </div>
   </div>
 </li>
 
-<!-- Nav Item - Pages Collapse Menu -->
-
+<!-- Employee -->
 <li class="nav-item">
   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsefive" aria-expanded="true" aria-controls="collapsefive">
-    <i class="fas fa-fw fa-cog"></i>
+    <i class="fas fa-user-friends"></i>
     <span>Employee</span>
   </a>
   <div id="collapsefive" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-      
-      <a class="collapse-item" href="add_customer.php">Add Employee</a>
-      <a class="collapse-item" href="managecustomer_active.php">Active Employees</a>
-      <a class="collapse-item" href="managecustomer.php">Deactivated Employees</a>
+      <a class="collapse-item" href="add_customer.php"><i class="fas fa-user-plus mr-2"></i>Add Employee</a>
+      <a class="collapse-item" href="managecustomer_active.php"><i class="fas fa-user-check mr-2"></i>Active Employees</a>
+      <a class="collapse-item" href="managecustomer.php"><i class="fas fa-user-times mr-2"></i>Deactivated Employees</a>
     </div>
   </div>
 </li>
 
-<!-- Nav Item - Pages Collapse Menu -->
-
+<!-- Report -->
 <li class="nav-item">
-  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSix" aria-expanded="true" aria-controls="collapsefive">
-    <i class="fas fa-fw fa-cog"></i>
+  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
+    <i class="fas fa-chart-line"></i>
     <span>Report</span>
   </a>
   <div id="collapseSix" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-      
-      <a class="collapse-item" href="reporting.php">Report dashboard</a>
-      
+      <a class="collapse-item" href="reporting.php"><i class="fas fa-chart-pie mr-2"></i>Report Dashboard</a>
     </div>
   </div>
 </li>
-<!-- Divider -->
-<!-- Divider -->
-
 
 <hr class="sidebar-divider">
-<!-- Nav Item - Utilities Collapse Menu -->
+
+<!-- All User -->
 <li class="nav-item">
   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#alluser" aria-expanded="true" aria-controls="alluser">
-    <i class="fas fa-fw fa-users"></i>
+    <i class="fas fa-users"></i>
     <span>All User</span>
   </a>
   <div id="alluser" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-      
-      <a class="collapse-item" href="add-user.php">Add User</a>
-      <a class="collapse-item" href="users.php">Manage All User</a>
+      <a class="collapse-item" href="add-user.php"><i class="fas fa-user-plus mr-2"></i>Add User</a>
+      <a class="collapse-item" href="users.php"><i class="fas fa-users-cog mr-2"></i>Manage All Users</a>
     </div>
   </div>
-</li> 
+</li>
 
-
+<!-- Settings -->
 <li class="nav-item">
   <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsesix" aria-expanded="true" aria-controls="collapsesix">
-    <i class="fas fa-fw fa-cog"></i>
+    <i class="fas fa-cogs"></i>
     <span>Setting</span>
   </a>
   <div id="collapsesix" class="collapse" aria-labelledby="collapsesix" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-     
-      <a class="collapse-item" href="setting.php">Setting</a>
+      <a class="collapse-item" href="setting.php"><i class="fas fa-tools mr-2"></i>Settings</a>
     </div>
   </div>
 </li>
