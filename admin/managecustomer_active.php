@@ -143,7 +143,7 @@
                                 
                                 <div class="form-group col-md-6">
                                     <Br/>
-                                    <section class="'">Using :</section>
+                                    <section class="">Using :</section> 
                                     <?php 
                                $cus_get_id;
                                         
@@ -167,8 +167,8 @@
                                 ?>
                                
                                 <!-- this is showing the asset name by ID for the asset that under emoloyees -->
-                                 <a href="view_asset.php?id=<?php echo  $row['id']; ?>"> 
-                                       <?= htmlspecialchars($asset_code) ?>, 
+                                 <a class ="btn btn-primary btn-sm m-1" href="view_asset.php?id=<?php echo  $row['id']; ?>"> 
+                                       <?= htmlspecialchars($asset_code) ?>
                                 </a>
 
                                 <?php
@@ -503,6 +503,7 @@ if (isset($_GET['delete'])) {
 </table>
 </div>
 </div>
+
 
 
 

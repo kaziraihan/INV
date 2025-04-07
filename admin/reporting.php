@@ -25,6 +25,8 @@
                 </div>
                     <a class="list-group-item list-group-item-action" href="report/active_emp_list.php" target="reportFrame">Active Emp List</a>
                     <a class="list-group-item list-group-item-action" href="report/archived_emp_list.php" target="reportFrame">Archived Emp List</a>
+                    <a class="list-group-item list-group-item-action" href="report/percentage_asset_report.php" target="reportFrame">Percentage asset report</a>
+                    
                   
                 </div>
             </div>

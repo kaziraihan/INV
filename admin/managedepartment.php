@@ -53,7 +53,7 @@ if (isset($_GET['delete'])) {
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <div class="ml-.5 text-gray-800 alert alert-secondary">department / Add department / Manage Categories</div>
+    <div class="ml-.5 text-gray-800 alert alert-secondary">Department / Add department / Manage Categories</div>
 
     <div class="row">
         <div class="col-md-6">
@@ -62,7 +62,7 @@ if (isset($_GET['delete'])) {
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
                         Manage department
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#adddepartmentModal">Add New department</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#adddepartmentModal">Add</button>
                     </h6>
                 </div>
                 <div class="card-body">
