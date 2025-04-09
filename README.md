@@ -48,7 +48,7 @@ Open db_config.php or config/connection.php and update with your MySQL credentia
 $host = "localhost";
 $user = "root";
 $pass = "";
-$dbname = "asset_inventory";
+$dbname = "root_system";
 
 
 Launch the application:
