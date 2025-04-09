@@ -1,58 +1,63 @@
     <?php include "includes/header.php"; ?>
 
 
-<?php
-    // Check if the assign button is pressed
-    if (isset($_GET['assign'])) {
-        $cus_get_id = intval($_GET['assign']); // Ensure ID is an integer
-        "Emp ID: " . $cus_get_id . "<br>";
+    <?php
+// Check if the assign button is pressed
+if (isset($_GET['assign'])) {
+    $cus_get_id = intval($_GET['assign']); // Sanitize ID
 
-        // Prepare statement to fetch employee's details
-        $stmt = $connection->prepare("SELECT * FROM customer WHERE id = ?");
-        $stmt->bind_param("i", $cus_get_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Fetch employee details
+    $stmt = $connection->prepare("SELECT * FROM customer WHERE id = ?");
+    $stmt->bind_param("i", $cus_get_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            echo "<h3>Employee Details:</h3>";
-            while ($row = $result->fetch_assoc()) {
-                $cus_id = htmlspecialchars($row['id']);
-                $cus_code = htmlspecialchars($row['emp_code']);
-                $cus_name = htmlspecialchars($row['cus_name']);
-                $cus_address = htmlspecialchars($row['cus_address']);
-                $cus_email = htmlspecialchars($row['cus_email']);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
 
-                 echo "Customer ID: $cus_id<br>";
-                 echo "Employee Code: $cus_code<br>";
-                 echo  "Employee Name: $cus_name<br>";
-                 echo "Customer Address: $cus_address<br>";
-                 echo "Customer Email: $cus_email<br>";
+        $cus_id = $row['id'];
+        $cus_code = $row['emp_code'];
+        $cus_name = $row['cus_name'];
+        $cus_address = $row['cus_address'];
+        $cus_email = $row['cus_email'];
 
-                // Insert the employee data into the `temp` table
-                $insert_query = "INSERT INTO temp (emp_id, emp_code, emp_name, emp_dept, asset_code, asset_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                $stmt1 = $connection->prepare($insert_query);
+        // Output for debug
+        /*
+        echo "<h3>Employee Details:</h3>";
+        echo "Customer ID: " . htmlspecialchars($cus_id) . "<br>";
+        echo "Employee Code: " . htmlspecialchars($cus_code) . "<br>";
+        echo "Employee Name: " . htmlspecialchars($cus_name) . "<br>";
+        echo "Customer Address: " . htmlspecialchars($cus_address) . "<br>";
+        echo "Customer Email: " . htmlspecialchars($cus_email) . "<br>";
+        */
 
-                $asset_code = "AssetCode123"; // Example asset code
-                $asset_id = "AssetID123";    // Example asset ID
-                $status = "Assigned";        // Example status
-                $stmt1->bind_param("issssss", $cus_get_id,$cus_code, $cus_name, $cus_address, $asset_code, $asset_id, $status);
+        // Example static values (replace with actual logic)
+        $asset_code = "AssetCode123";
+        $asset_id = "AssetID123";
+        $status = "Assigned";
 
-                if ($stmt1->execute()) {
-                    echo "<div>Asset record inserted successfully!</div>";
-                    header(header: "Location: assign.php");
-                } else {
-                    echo "<div class='alert alert-danger'>Failed to insert asset record.</div>";
-                }
+        // Insert into temp table
+        $insert_query = "INSERT INTO temp (emp_id, emp_code, emp_name, emp_dept, asset_code, asset_id, status) 
+                         VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt1 = $connection->prepare($insert_query);
+        $stmt1->bind_param("issssss", $cus_id, $cus_code, $cus_name, $cus_address, $asset_code, $asset_id, $status);
 
-                $stmt1->close();
-            }
-          
+        if ($stmt1->execute()) {
+            // Optional: Set success flag in session or GET param
+            header("Location: assign.php?insert=success");
+            exit;
         } else {
-            echo "<div class='alert alert-warning'>No details found for this employee. Please provide valid data.</div>";
+            echo "<div class='alert alert-danger'>Failed to insert asset record: " . htmlspecialchars($stmt1->error) . "</div>";
         }
-        $stmt->close();
+
+        $stmt1->close();
+    } else {
+        echo "<div class='alert alert-warning'>No details found for this employee. Please provide valid data.</div>";
     }
-    ?>
+
+    $stmt->close();
+}
+?>
 
 
 
@@ -73,7 +78,6 @@
         $row = $result->fetch_assoc();
         ?>
 
-<hr>
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow mb-4">
@@ -111,13 +115,22 @@
                                                           
                                 <div class="form-group col-md-6">
                                     <label>Status</label>
-                                    <div class="form-check form-switch d-flex">
-                                    <input class="form-control" type="checkbox" name="status" id="statusSwitch" value="1" <?= $row['status'] == '1' ? 'checked' : ''; ?>>
-                                    <label class="form-control" for="statusSwitch">
-                                        <?= $row['status'] == '1' ? 'Active' : 'Deactive'; ?>
-                                    </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status" id="statusActive" value="1" <?= $row['status'] == '1' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="statusActive">Active</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status" id="statusDeactive" value="0" <?= $row['status'] == '0' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="statusDeactive">Deactive</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status" id="statusArchived" value="2" <?= $row['status'] == '2' ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="statusArchived">Archive</label>
                                     </div>
                                 </div>
+
+
+
                                 <script>
                                 document.getElementById("statusSwitch").addEventListener("change", function() {
                                     this.nextElementSibling.textContent = this.checked ? "Active" : "Deactive";
@@ -278,14 +291,52 @@ if (isset($_POST['update-customer'])) {
 ?>
 
 <!-- update part is ends here -->
-
-
-<div class="card-header py-3 d-flex justify-content-between align-items-center">
-    
-        
-       
-    
+<div class="btn-group mb-3" id="statusTabs" role="group" aria-label="Status Tabs">
+    <button type="button" class="btn btn-outline-primary active-tab" data-status="1">Active</button>
+    <button type="button" class="btn btn-outline-secondary" data-status="0">Deactived</button>
+    <button type="button" class="btn btn-outline-dark" data-status="2">Archived</button>
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const statusButtons = document.querySelectorAll("#statusTabs button");
+
+    statusButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            // Toggle active class on buttons
+            statusButtons.forEach(btn => btn.classList.remove("active-tab"));
+            this.classList.add("active-tab");
+
+            const selectedStatus = this.getAttribute("data-status");
+            const rows = document.querySelectorAll("#sortableTable tbody tr");
+
+            rows.forEach(row => {
+                const rowStatus = row.children[9].textContent.trim(); // 10th column (index 9)
+                let show = false;
+
+                if (selectedStatus === "1" && rowStatus === "Active") show = true;
+                if (selectedStatus === "0" && rowStatus === "Deactive") show = true;
+                if (selectedStatus === "2" && rowStatus === "Archived") show = true;
+
+                row.style.display = show ? "" : "none";
+            });
+        });
+    });
+
+    // Auto-trigger the Active tab on load
+    document.querySelector("#statusTabs button[data-status='1']").click();
+});
+</script>
+
+
+<style>
+    .active-tab {
+        background-color: #007bff;
+        color: white !important;
+        border-color: #007bff;
+    }
+</style>
 
 
 
@@ -336,11 +387,7 @@ if (isset($_POST['update-customer'])) {
         <!-- print page command ends-->
             </h6>
             
-      
-
-
-
-            <!-- button for JS table search -->
+        <!-- button for JS table search -->
             <input type="text" id="searchInput" class="form-control w-25 font-weight text-primary" placeholder="Search Employee..." onkeyup="searchTable()">
         </div>
 
@@ -366,7 +413,7 @@ if (isset($_POST['update-customer'])) {
                     <tbody style="font-size: 0.9rem;">
                         <?php
                         
-                        $stmt = $connection->prepare("SELECT * FROM customer WHERE status = '1' ORDER BY cus_name ASC");
+                        $stmt = $connection->prepare("SELECT * FROM customer ORDER BY cus_name ASC");
 
                         $stmt->execute();
                         $result = $stmt->get_result();
@@ -382,7 +429,7 @@ if (isset($_POST['update-customer'])) {
                                 <td><?= htmlspecialchars($row['cus_ref_no']); ?></td>
                                 <td><?= htmlspecialchars($row['cus_email']); ?></td>
                                 <td>0<?= htmlspecialchars($row['cus_phone']); ?></td>
-                                <td><?= htmlspecialchars($row['cus_ref']); ?></td>
+                                <td><?= htmlspecialchars($row['cus_ref']== '1' ? 'Manager' : 'Not'); ?></td>
                                 <td>
                                     <?php
                                     $asset_stmt = $connection->prepare("SELECT id, usedbyid, AssetCode FROM Asset_list WHERE usedbyid = ?");
@@ -400,22 +447,40 @@ if (isset($_POST['update-customer'])) {
                                     $asset_stmt->close();
                                     ?>
                                 </td>
-                                <td><?= $row['status'] == '1' ? 'Active' : 'Deactive'; ?></td>
+                                <td>
+                                    <?php
+                                        if ($row['status'] == '1') {
+                                            echo 'Active';
+                                        } elseif ($row['status'] == '2') {
+                                            echo 'Archived';
+                                        } else {
+                                            echo 'Deactive';
+                                        }
+                                    ?>
+                                </td>
+
                                 <td><?= $row['cus_date'] . ' by ' . $the_user; ?></td>
                                 <td><?= $row['date_updated'] . ' by ' . $the_user; ?></td>
                                 <td>
-                                    <div class="btn-group">
-                                        <?php if ($assign_role == 1){ ?>                                            
-                                            <a href="managecustomer_active.php?assign=<?= $row['id']; ?>" class="btn btn-secondary btn-sm">Assign</a>
-                                        <?php } ?>
-                                        <?php if ($update_role == 1){ ?>                                            
-                                            <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm">Update</a>
-                                        <?php } ?>
-                                        <?php if ($delete_role == 1){ ?>
-                                            <a href="managecustomer_active.php?delete=<?= $row['id']; ?>" class="btn btn-danger btn-sm">Delete</a>
-                                        <?php } ?>
-                                    </div>
-                                </td>
+                                <div class="btn-group">
+                                    <?php if ($assign_role == 1){ ?>                                            
+                                        <a href="managecustomer_active.php?assign=<?= $row['id']; ?>" class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-user-plus"></i> Assign
+                                        </a>
+                                    <?php } ?>
+                                    <?php if ($update_role == 1){ ?>                                            
+                                        <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i> Update
+                                        </a>
+                                    <?php } ?>
+                                    <?php if ($delete_role == 1){ ?>
+                                        <a href="managecustomer_active.php?delete=<?= $row['id']; ?>" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </a>
+                                    <?php } ?>
+                                </div>
+                            </td>
+
                             </tr>
                             <?php
                         }

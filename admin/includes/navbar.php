@@ -66,8 +66,8 @@ while($row=mysqli_fetch_assoc($select_theme)){
   <div id="collapsefive" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
       <a class="collapse-item" href="add_customer.php"><i class="fas fa-user-plus mr-2"></i>Add Employee</a>
-      <a class="collapse-item" href="managecustomer_active.php"><i class="fas fa-user-check mr-2"></i>Active Employees</a>
-      <a class="collapse-item" href="managecustomer.php"><i class="fas fa-user-times mr-2"></i>Deactivated Employees</a>
+      <a class="collapse-item" href="managecustomer_active.php"><i class="fas fa-user-check mr-2"></i>Employees</a>
+    
     </div>
   </div>
 </li>
