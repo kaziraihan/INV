@@ -292,10 +292,9 @@ if (isset($_GET['id'])) {
                 $usedById = htmlspecialchars($row['usedbyid']);
                 $usedByName = !empty($row['Usedby']) ? htmlspecialchars($row['Usedby']) : "Unused";
                 echo "<td><a href='managecustomer_active.php?update=$usedById'>$usedByName</a></td>";
-
                 echo "<td>";
                 if ($update_role == 1) {
-                    echo "<a href='add_asset_active.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-info btn-sm'>Update</a>";
+                    echo "<a href='add_asset_active.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-info btn-sm'><i class='fas fa-edit'></i> Update</a>";
                 }
                 echo "</td>";
                 echo "</tr>";
