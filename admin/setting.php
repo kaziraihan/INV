@@ -27,7 +27,6 @@
 								$query = "UPDATE theme SET banner='$the_banner'";
 								$select_banner = mysqli_query($connection,$query);
 								$query = "UPDATE theme SET banner='$the_banner'";
-
 								
 							}
 

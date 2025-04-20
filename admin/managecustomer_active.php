@@ -32,15 +32,15 @@ if (isset($_GET['assign'])) {
         */
 
         // Example static values (replace with actual logic)
-        $asset_code = "AssetCode123";
-        $asset_id = "AssetID123";
-        $status = "Assigned";
+        // $date_created = "date_created";
+        // $asset_id = "AssetID123";
+        // $status = "Assigned";
 
         // Insert into temp table
-        $insert_query = "INSERT INTO temp (emp_id, emp_code, emp_name, emp_dept, asset_code, asset_id, status) 
-                         VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $insert_query = "INSERT INTO temp (emp_id, emp_code, emp_name, emp_dept) 
+                         VALUES (?, ?, ?, ?)";
         $stmt1 = $connection->prepare($insert_query);
-        $stmt1->bind_param("issssss", $cus_id, $cus_code, $cus_name, $cus_address, $asset_code, $asset_id, $status);
+        $stmt1->bind_param("isss", $cus_id, $cus_code, $cus_name, $cus_address);
 
         if ($stmt1->execute()) {
             // Optional: Set success flag in session or GET param
@@ -156,7 +156,7 @@ if (isset($_GET['assign'])) {
                                 
                                 <div class="form-group col-md-6">
                                     <Br/>
-                                    <section class="">Using :</section> 
+                                    <section class="">Now Using :</section> 
                                     <?php 
                                $cus_get_id;
                                         
@@ -178,6 +178,8 @@ if (isset($_GET['assign'])) {
                                      "Useing : " . $asset_code =  $row['AssetCode'] . "";  // Displaying all the information from each row
                                
                                 ?>
+
+               
                                
                                 <!-- this is showing the asset name by ID for the asset that under emoloyees -->
                                  <a class ="btn btn-primary btn-sm m-1" href="view_asset.php?id=<?php echo  $row['id']; ?>"> 
@@ -188,7 +190,34 @@ if (isset($_GET['assign'])) {
                                 }
                                 ?>
 
-                               
+
+                            <section class="mt-4">Previously Used :</section> 
+                           
+                            <?php
+                            // Make sure $cus_get_id has a value
+                            $query = "SELECT * FROM temp WHERE emp_id = '$cus_get_id'";
+                            $result = mysqli_query($connection, $query);
+
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                 $asset_id = $row['asset_id'];// showing the assed id drim temp table
+                                // Fetch from asset_list based on asset_id
+                                $query2 = "SELECT * FROM asset_list WHERE id = ?";
+                                $stmt = mysqli_prepare($connection, $query2);
+                                mysqli_stmt_bind_param($stmt, "s", $asset_id);
+                                mysqli_stmt_execute($stmt);
+                                $result2 = mysqli_stmt_get_result($stmt);
+                                if ($asset_row = mysqli_fetch_assoc($result2)) {
+                                    // Output the asset link
+                                    echo '<a class="btn btn-secondary btn-sm m-1" href="view_asset.php?id=' . htmlspecialchars($asset_id) . '">';
+                                    echo htmlspecialchars($asset_code) ;// showing the asset code 
+                                    echo '</a>'; 
+                                }   
+                                echo $row['date_created'];// showing the assign date 
+                            }
+                            ?>
+
+
+                         
                                 </div>
                                
                                </div>
@@ -208,7 +237,6 @@ if (isset($_GET['assign'])) {
     $stmt->close();
 }
 ?>
-
 
 
 
@@ -452,9 +480,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                         if ($row['status'] == '1') {
                                             echo 'Active';
                                         } elseif ($row['status'] == '2') {
-                                            echo 'Archived';
+                                            echo '<p class="text-alert">Archived</p>';
                                         } else {
-                                            echo 'Deactive';
+                                            echo '<p class="text-danger">Deactive</p>';
+
                                         }
                                     ?>
                                 </td>
@@ -568,23 +597,6 @@ if (isset($_GET['delete'])) {
 </table>
 </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

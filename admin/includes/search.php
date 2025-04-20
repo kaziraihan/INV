@@ -53,9 +53,7 @@
                             OR UsedBy LIKE '%$search%') 
                             AND Disposed = 0 
                             ORDER BY `asset_list`.`Disposed` ASC";
-
                             $select_customer = mysqli_query($connection, $query);
-
                             if (mysqli_num_rows($select_customer) > 0) {
                                 while ($row = mysqli_fetch_assoc($select_customer)): ?>
                                     <tr>
@@ -75,7 +73,6 @@
                                         <td><?php echo $row['SN']; ?></td>
                                         <td><?php echo $row['Supplier']; ?></td>
                                         <td><?php echo $row['Remark']; ?></td>
-                                        
                                         <td>
                                         <!-- thisis the user view showing URL -->
                                         <a href=" managecustomer_active.php?update= <?php echo empty($row['usedbyid'])? '': $row['usedbyid']; ?>">
@@ -83,15 +80,11 @@
                                         <?php echo empty($row['Usedby']) ? 'Unused' : $row['Usedby']; ?>
                                         </a>
                                         </td>
-                                        
                                         <?php if ($the_role == 1 || $update_role == 1 || $delete_role == 1){ ?>
                                             <td><a href="add_asset_active.php?id=<?php echo $row['id']; ?>"><button
                                                 class="btn btn-info btn-sm">Update</button></a>
                                             </td>
-                                        <?php } ?>
-
-                                        
-                                        
+                                        <?php } ?>                                      
                                     </tr>
                                 <?php endwhile;
                             } else {
@@ -101,8 +94,6 @@
                         ?>
                     </tbody>
                 </table>
-
-              
             </div>
         </div>
     </div>

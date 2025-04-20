@@ -3,6 +3,7 @@
 <div class="container-fluid">
     <div class="col-md-12">
         <div class="card shadow mb-4">
+
             <?php
             // Fetch the latest row by ID
             $query = "SELECT * FROM temp ORDER BY id DESC LIMIT 1";
@@ -25,9 +26,6 @@
                                     <th>Employee Department</th>
                                     <th>ID</th>
                                     <th>Employee ID</th>
-                                    
-                                   
-                                    
                                     <th>Asset ID</th>
                                     <th>Asset Code</th>
                                     <th>Status</th>
@@ -40,10 +38,10 @@
                                     <td><?php echo htmlspecialchars($temp_usedby = $row['emp_name']); ?></td>
                                     <td><?php echo htmlspecialchars($temp_usedbydept = $row['emp_dept']); ?></td>
                                     <td><?php echo htmlspecialchars($temp_id = $row['id']); ?></td>
-                                    <td><?php echo htmlspecialchars($temp_usedbyid = $row['emp_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['asset_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['asset_code']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['status']); ?></td>
+                                   <!--td><?php echo htmlspecialchars($temp_usedbyid = $row['emp_id']); ?></td-->
+                                    <!--td><?php echo htmlspecialchars($row['asset_id']); ?></td-->
+                                   <!--td><?php echo htmlspecialchars($row['date_created']); ?></td-->
+                                    <!--td><?php echo htmlspecialchars($row['status']); ?></td-->
                                 </tr>
                             </tbody>
                         </table>
@@ -143,18 +141,20 @@
     </div>
     <?php endif; ?>
 
+
 <!-- Assign Logic -->
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Assign'])) {
     $asset_id = intval($_POST['Assign']); // Sanitize asset ID
 
+
     // Fetch asset details
     $query = "SELECT * FROM asset_list WHERE id = '$asset_id'";
     $result = mysqli_query($connection, $query);
-
+    
     if ($result && mysqli_num_rows($result) > 0) {
         $asset = mysqli_fetch_assoc($result);
-
+        
         // Simulate "UsedBy" update with cascading values
         $usedby2 = $asset['Usedby'];
         $usedby3 = $asset['Usedby2'];
@@ -189,9 +189,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Assign'])) {
                 usedbydept = '$temp_usedbydept'
             WHERE id = '$asset_id'
         ";
-
+        
         if (mysqli_query($connection, $update_query)) {
-            echo "<div class='alert alert-success'>Asset assigned and history updated successfully!</div>";
+            echo "<div class='alert alert-success'>Asset has asseined and Asset assigning history updated successfully!</div>";
+
+            // get temp datatable update with Asset ID - Starts here
+             $asset_id;
+             $temp_id;
+            
+            $query = "UPDATE temp SET asset_id = '$asset_id', date_created = NOW() WHERE id = '$temp_id'";
+            $Stat = mysqli_query($connection, $query);
+
+            if ($Stat) {
+                echo " <div class='alert alert-success'>Record of who using this asset before is updated.</div>";
+            } else {
+                echo "Update failed: " . mysqli_error($connection);
+            }
+            
+            // get temp datatable update with Asset ID - Ends here
+
         } else {
             echo "<div class='alert alert-danger'>Error updating asset: " . mysqli_error($connection) . "</div>";
         }
@@ -206,5 +222,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Assign'])) {
 </div>
 </div>
 </div>
+
 
 <?php include "includes/footer.php"; ?>
