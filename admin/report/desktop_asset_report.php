@@ -52,6 +52,7 @@
                     <th>Supplier</th>
                     <th>Remark</th>
                     <th>UsedBy</th>
+                    <th>Dept</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,6 +77,7 @@
                         <td><?php echo $row['Supplier']; ?></td>
                         <td><?php echo $row['Remark']; ?></td>
                         <td><?php echo empty($row['Usedby']) ? 'Unused' : $row['Usedby']; ?></td>
+                        <td><?php echo empty($row['Usedby']) ? 'N/A' : $row['usedbydept']; ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
