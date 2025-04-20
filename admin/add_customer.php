@@ -42,7 +42,7 @@
 							die("Query Faild" . mysqli_error($connection));
 						}
 						else{
-							header("Location: managecustomer.php");
+							header("Location: managecustomer_active.php");
 						}
 						
 					}
@@ -77,24 +77,30 @@
 										</select>
 									</div>
 									<div class="form-group">
-										<label>Emp email</label>
-										<input type="text" name="cus_email" class="form-control" autocomplete="off" >
-									</div>
-									<div class="form-group">
-										<label>Emp ext</label>
-										<input type="text" name="cus_phone" class="form-control" autocomplete="off" value="+88 " >
-									</div>
-								</div>
-								<div class="col-md-6">
-
-									<div class="form-group">
 										<label>Emp designation</label>
 										<input type="text" name="cus_ref_no" class="form-control" autocomplete="off" >
 									</div>
 									<div class="form-group">
-										<label>Emp Manager</label>
-										<input type="text" name="cus_ref" class="form-control" autocomplete="off" >
+										<label>Emp email</label>
+										<input type="text" name="cus_email" class="form-control" autocomplete="off" >
 									</div>
+									
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Emp ext</label>
+										<input type="text" name="cus_phone" class="form-control" autocomplete="off" value="" >
+									</div>
+
+								
+									<div class="form-group">
+										<label>Is a Manager ?</label>
+										<select name="cus_ref" class="form-control" autocomplete="off">
+											<option value="1">Yes, a Manager</option>
+											<option value="0">Not a Manager</option>
+										</select>
+									</div>
+
 									<div class="form-group">
 										<label for="exampleFormControlFile1">Upload Akowledgment ( only Jpg )</label>
 										<input type="file" class="form-control-file" name="image" > 

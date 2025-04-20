@@ -66,14 +66,14 @@
             <h6 class="m-0 font-weight-bold text-primary col-md-10">Asset Details</h6>
 
             <?php if ($asset['Disposed'] == 0): ?>
-                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateUsedByModal">Assign</button>
+                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#updateUsedByModal">Assign</button>
             <?php endif; ?>
 
             <?php if ($update_role == 1): ?>
-                <a href="add_asset_active.php?id=<?= $asset_id; ?>" class="btn btn-info btn-sm">Update</a>
+                <a href="add_asset_active.php?id=<?= $asset_id; ?>" class="btn btn-outline-primary btn-sm">Update</a>
             <?php endif; ?>
 
-            <button onclick="window.print()" class="btn btn-primary btn-sm mr-2">Print</button>
+            <button onclick="window.print()" class="btn btn-outline-info btn-sm mr-2">Print</button>
         </div>
 
         <div class="card-body">

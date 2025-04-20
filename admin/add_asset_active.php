@@ -179,16 +179,16 @@ if (isset($_GET['id'])) {
                         }
                          </script>
                         <div>
-                            <button onclick="filterData('all')" class="btn btn-primary btn-sm">All Active Assets</button>
-                            <button onclick="filterData('desktop')" class="btn btn-secondary btn-sm">Desktops</button>
-                            <button onclick="filterData('laptop')" class="btn btn-info btn-sm">Laptops</button>
-                            <button onclick="filterData('mobile')" class="btn btn-warning btn-sm">Mobiles</button>
-                            <button onclick="filterData('unused_desktop')" class="btn btn-success btn-sm">Unused Desktops</button>
-                            <button onclick="filterData('unused_laptop')" class="btn btn-danger btn-sm">Unused Laptops</button>
+                            <button onclick="filterData('all')" class="btn btn-outline-primary">All Active Assets</button>
+                            <button onclick="filterData('desktop')" class="btn btn-outline-secondary">Desktops</button>
+                            <button onclick="filterData('laptop')" class="btn btn-outline-success">Laptops</button>
+                            <button onclick="filterData('mobile')" class="btn btn-outline-danger">Mobiles</button>
+                            <button onclick="filterData('unused_desktop')" class="btn btn-outline-warning">Unused Desktops</button>
+                            <button onclick="filterData('unused_laptop')" class="btn btn-outline-info">Unused Laptops</button>
                         </div>
                     </div>
                             <!-- print page command -->
-                        <button onclick="window.print()" class="btn btn-success btn-sm mr-1">Print</button>
+                        <button onclick="window.print()" class="btn  btn-outline-dark mr-1">Print</button>
   
 
                             <script>
@@ -211,8 +211,8 @@ if (isset($_GET['id'])) {
                             <!-- pdf -->
 
 
-                            <a href="add_asset.php" class="btn btn-secondary btn-sm mr-2"> See Full list</a>
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#assetModal">
+                            <a href="add_asset.php" class="btn btn-outline-primary mr-2"> See Full list</a>
+                            <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#assetModal">
                                Add Asset
                             </button>
                         </div>

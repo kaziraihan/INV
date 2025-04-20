@@ -52,6 +52,7 @@
                     <th>Supplier</th>
                     <th>Remark</th>
                     <th>UsedBy</th>
+                    <th>Dept</th>
                 </tr>
             </thead>
             <tbody>
