@@ -1,6 +1,9 @@
-<?php include "includes/header.php"; ?>
+<?php 
+include "includes/header.php";  ?>
+
 
 <div class="container-fluid">
+
     <div class="ml-.5 text-gray-800 alert alert-secondary">View Asset Details</div>
 
     <?php
