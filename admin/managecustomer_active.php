@@ -3,7 +3,7 @@
 
     <?php
 // Check if the assign button is pressed
-if (isset($_GET['assign'])) {
+    if (isset($_GET['assign'])) {
     $cus_get_id = intval($_GET['assign']); // Sanitize ID
 
     // Fetch employee details
@@ -38,7 +38,7 @@ if (isset($_GET['assign'])) {
 
         // Insert into temp table
         $insert_query = "INSERT INTO temp (emp_id, emp_code, emp_name, emp_dept) 
-                         VALUES (?, ?, ?, ?)";
+        VALUES (?, ?, ?, ?)";
         $stmt1 = $connection->prepare($insert_query);
         $stmt1->bind_param("isss", $cus_id, $cus_code, $cus_name, $cus_address);
 
@@ -76,6 +76,7 @@ if (isset($_GET['assign'])) {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        $image =  htmlspecialchars($row['image']);
         ?>
 
         <div class="row">
@@ -88,32 +89,35 @@ if (isset($_GET['assign'])) {
                         <form action="" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="cus_id" value="<?= htmlspecialchars($cus_get_id); ?>">
                             <div class="row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Emp Name</label>
                                     <input type="text" name="cus_name" class="form-control" value="<?= htmlspecialchars($row['cus_name']); ?>" required>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Emp Code</label>
                                     <input type="text" name="emp_code" class="form-control" value="<?= htmlspecialchars($row['emp_code']); ?>" required>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Emp Email</label>
                                     <input type="email" name="cus_email" class="form-control" value="<?= htmlspecialchars($row['cus_email']); ?>" required>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Emp Phone</label>
                                     <input type="text" name="cus_phone" class="form-control" value="<?= htmlspecialchars($row['cus_phone']); ?>" required>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Designation</label>
                                     <input type="text" name="cus_ref_no" class="form-control" value="<?= htmlspecialchars($row['cus_ref_no']); ?>" required>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Manager</label>
-                                    <input type="text" name="cus_ref" class="form-control" value="<?= htmlspecialchars($row['cus_ref']); ?>" required>
+                                    <input type="text" name="cus_ref" class="form-control" 
+                                    value="<?= ($row['cus_ref'] == '1') ? 'Manager' : (($row['cus_ref'] == '0') ? 'Not a manager' : htmlspecialchars($row['cus_ref'])); ?>" 
+                                    required>
+
                                 </div>     
-                                                          
-                                <div class="form-group col-md-6">
+                                
+                                <div class="form-group col-md-4">
                                     <label>Status</label>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="status" id="statusActive" value="1" <?= $row['status'] == '1' ? 'checked' : ''; ?>>
@@ -129,84 +133,89 @@ if (isset($_GET['assign'])) {
                                     </div>
                                 </div>
 
-
+                                
 
                                 <script>
-                                document.getElementById("statusSwitch").addEventListener("change", function() {
-                                    this.nextElementSibling.textContent = this.checked ? "Active" : "Deactive";
+                                    document.getElementById("statusSwitch").addEventListener("change", function() {
+                                        this.nextElementSibling.textContent = this.checked ? "Active" : "Deactive";
                                     this.value = this.checked ? "1" : "0"; // Ensure correct value is sent in the form
                                 });
-                                </script>
-                                <div class="form-group col-md-6">
-                                    <label>Emp Dept</label>
-                                     <select class="form-control" name="cus_address" required>
+                            </script>
+                            <div class="form-group col-md-4">
+                                <label>Emp Dept</label>
+                                <select class="form-control" name="cus_address" required>
                                     <option><?php echo htmlspecialchars($row['cus_address']); ?></option>
-                                        <?php 
-                                        $query = "SELECT * FROM department";
-                                        $stst = mysqli_query($connection, $query);
-                                        while( $row = mysqli_fetch_assoc($stst) ){
-                                            echo   $Id    = $row['id'];
-                                            $department  = $row['department'];
-                                            ?>  
-                                           <option value="<?php echo $department; ?>"><?php if ($Id){
-                                                echo    $department; } ?></option>
-                                            <?php } ?>                      
-                                       </select>
+                                    <?php 
+                                    $query = "SELECT * FROM department";
+                                    $stst = mysqli_query($connection, $query);
+                                    while( $row = mysqli_fetch_assoc($stst) ){
+                                        echo   $Id    = $row['id'];
+                                        $department  = $row['department'];
+                                        ?>  
+                                        <option value="<?php echo $department; ?>"><?php if ($Id){
+                                            echo    $department; } ?></option>
+                                        <?php } ?>                      
+                                    </select>
                                 </div>
-                                
-                                <div class="form-group col-md-6">
+
+                            <div class="form-group col-md-4">
+                                <label for="exampleFormControlFile1">Upload Akowledgment ( only Jpg )</label>
+                                <input type="file" class="form-control-file" name="image"> 
+                            </div>
+                                  
+                                <div class="form-group col-md-4">
                                     <Br/>
                                     <section class="">Now Using :</section> 
                                     <?php 
-                               $cus_get_id;
-                                        
+                                    $cus_get_id;
+                                    
                                 // Use a prepared statement for security
-                                $query = "SELECT * FROM asset_list WHERE usedbyid = '$cus_get_id'";
-                                $stmt = mysqli_prepare($connection, $query);
+                                    $query = "SELECT * FROM asset_list WHERE usedbyid = '$cus_get_id'";
+                                    $stmt = mysqli_prepare($connection, $query);
 
                                 // Execute the prepared statement
-                                mysqli_stmt_execute($stmt);
+                                    mysqli_stmt_execute($stmt);
 
                                 // Get the result
-                                $result = mysqli_stmt_get_result($stmt);
+                                    $result = mysqli_stmt_get_result($stmt);
 
                                 // Fetch and display the data
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                         "Asset ID: " . $row['id'] . "<br>";
-                                         "Used By ID: " . $row['usedbyid'] . "<br>";
-                                         "Used By: " . $row['Usedby'] . "<br>";
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                     "Asset ID: " . $row['id'] . "<br>";
+                                     "Used By ID: " . $row['usedbyid'] . "<br>";
+                                     "Used By: " . $row['Usedby'] . "<br>";
                                      "Useing : " . $asset_code =  $row['AssetCode'] . "";  // Displaying all the information from each row
-                               
-                                ?>
+                                     
+                                     ?>
 
-               
-                               
-                                <!-- this is showing the asset name by ID for the asset that under emoloyees -->
-                                 <a class ="btn btn-primary btn-sm m-1" href="view_asset.php?id=<?php echo  $row['id']; ?>"> 
+                                     
+                                     
+                                     <!-- this is showing the asset name by ID for the asset that under emoloyees -->
+                                     <a class ="btn btn-primary btn-sm m-1" href="view_asset.php?id=<?php echo  $row['id']; ?>"> 
                                        <?= htmlspecialchars($asset_code) ?>
-                                </a>
+                                   </a>
 
-                                <?php
-                                }
-                                ?>
+                                   <?php
+                               }
+                               ?>
 
 
-                            <section class="mt-4">Previously Used :</section> 
-                           
-                            <?php
+                               <section class="mt-4">Previously Used :</section> 
+                               
+                               <?php
                             // Make sure $cus_get_id has a value
-                            $query = "SELECT * FROM temp WHERE emp_id = '$cus_get_id'";
-                            $result = mysqli_query($connection, $query);
+                               $query = "SELECT * FROM temp WHERE emp_id = '$cus_get_id'";
+                               $result = mysqli_query($connection, $query);
 
-                            while ($row = mysqli_fetch_assoc($result)) {
+                               while ($row = mysqli_fetch_assoc($result)) {
                                  $asset_id = $row['asset_id'];// showing the assed id drim temp table
                                 // Fetch from asset_list based on asset_id
-                                $query2 = "SELECT * FROM asset_list WHERE id = ?";
-                                $stmt = mysqli_prepare($connection, $query2);
-                                mysqli_stmt_bind_param($stmt, "s", $asset_id);
-                                mysqli_stmt_execute($stmt);
-                                $result2 = mysqli_stmt_get_result($stmt);
-                                if ($asset_row = mysqli_fetch_assoc($result2)) {
+                                 $query2 = "SELECT * FROM asset_list WHERE id = ?";
+                                 $stmt = mysqli_prepare($connection, $query2);
+                                 mysqli_stmt_bind_param($stmt, "s", $asset_id);
+                                 mysqli_stmt_execute($stmt);
+                                 $result2 = mysqli_stmt_get_result($stmt);
+                                 if ($asset_row = mysqli_fetch_assoc($result2)) {
                                     // Output the asset link
                                     echo '<a class="btn btn-secondary btn-sm m-1" href="view_asset.php?id=' . htmlspecialchars($asset_id) . '">';
                                     echo htmlspecialchars($asset_code) ;// showing the asset code 
@@ -216,13 +225,40 @@ if (isset($_GET['assign'])) {
                             }
                             ?>
 
+                        </div>
 
-                         
+                        <div class="form-group col-md-4">
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <?php
+                            if (!empty($image)) {
+                                $uniqueId = uniqid('img_'); // ensures unique modal ID
+                            ?>
+                                <!-- Thumbnail -->
+                                <img src="img/customer/<?php echo htmlspecialchars($image); ?>" 
+                                    alt="Customer Image"
+                                    style="width: 100%; height :auto; cursor: pointer; border: 1px solid #007bff;"
+
+                                   
+                                    data-bs-target="#<?php echo $uniqueId; ?>">
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="<?php echo $uniqueId; ?>" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center">
+                                                <img src="img/customer/<?php echo htmlspecialchars($image); ?>" class="img-fluid rounded" alt="Customer Full Image">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                               
-                               </div>
+                            <?php } ?>
+                        </div>
+
+                    </div><br/><hr>
                             <div class="row m-1">
-                                <button type="submit" name="update-customer" class="col-md-4 btn btn-primary btn-add-user">Update Employee Data</button>
+                                <button type="submit" name="update-customer" class="col-md-4 btn btn-primary btn-add-user">Save Employee Data</button>
                                 <a href="managecustomer_active.php" class="col-md-4 btn btn-secondary btn-add-user">Cancel</a>
                             </div> 
                         </form>
@@ -258,6 +294,12 @@ if (isset($_POST['update-customer'])) {
     $asset = trim($_POST['asset']);
     $status = intval($_POST['status']); // Ensure status is numeric
 
+    
+    $image 				= $_FILES['image']['name'];
+    $image_tmp 			= $_FILES['image']['tmp_name'];
+
+    move_uploaded_file($image_tmp, "img/customer/" .$image);
+
     // Validate required fields
     if (empty($cus_name) || empty($emp_code) || empty($cus_address) || empty($cus_email) || empty($cus_phone)) {
         echo "<div class='alert alert-danger'>All fields are required.</div>";
@@ -286,12 +328,13 @@ if (isset($_POST['update-customer'])) {
         cus_ref_no = ?, 
         cus_ref = ?, 
         asset = ?, 
+        image = ?,
         date_updated = NOW(), 
         status = ? 
         WHERE id = ?");
 
     // Bind the parameters correctly
-    $stmt->bind_param("ssssssssii", 
+    $stmt->bind_param("sssssssssii", 
         $cus_name, 
         $cus_address, 
         $emp_code, 
@@ -300,6 +343,7 @@ if (isset($_POST['update-customer'])) {
         $cus_ref_no, 
         $cus_ref, 
         $asset, 
+        $image,
         $status, 
         $cus_id
     );
@@ -327,19 +371,19 @@ if (isset($_POST['update-customer'])) {
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const statusButtons = document.querySelectorAll("#statusTabs button");
+    document.addEventListener("DOMContentLoaded", function () {
+        const statusButtons = document.querySelectorAll("#statusTabs button");
 
-    statusButtons.forEach(button => {
-        button.addEventListener("click", function () {
+        statusButtons.forEach(button => {
+            button.addEventListener("click", function () {
             // Toggle active class on buttons
-            statusButtons.forEach(btn => btn.classList.remove("active-tab"));
-            this.classList.add("active-tab");
+                statusButtons.forEach(btn => btn.classList.remove("active-tab"));
+                this.classList.add("active-tab");
 
-            const selectedStatus = this.getAttribute("data-status");
-            const rows = document.querySelectorAll("#sortableTable tbody tr");
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#sortableTable tbody tr");
 
-            rows.forEach(row => {
+                rows.forEach(row => {
                 const rowStatus = row.children[9].textContent.trim(); // 10th column (index 9)
                 let show = false;
 
@@ -349,12 +393,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 row.style.display = show ? "" : "none";
             });
+            });
         });
-    });
 
     // Auto-trigger the Active tab on load
-    document.querySelector("#statusTabs button[data-status='1']").click();
-});
+        document.querySelector("#statusTabs button[data-status='1']").click();
+    });
 </script>
 
 
@@ -385,39 +429,39 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 <!-- script for js table sorting ends -->
 
-    
+
 <div class="row">
     <div class="col-md-12">
         <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 pl-3 font-weight-bold text-primary">
-                All Emp Information
-                <?php if ($_SESSION['user_role'] == '1'): ?>
-                    <a href="add_customer.php" class="btn btn-dark btn-sm ml-3">Add Emp</a>
-                <?php endif; ?>
-        <!-- print page command -->
-            <button onclick="window.print()" class="justify-content-right btn btn-primary btn-sm mr-2">Print</button>
-            <script>
-                function printPage() {
-                    window.print();
-                }
-            </script>
-            <script>
-                function printDiv(divId) {
-                    var content = document.getElementById(divId).innerHTML;
-                    var originalContent = document.body.innerHTML;
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 pl-3 font-weight-bold text-primary">
+                    All Emp Information
+                    <?php if ($_SESSION['user_role'] == '1'): ?>
+                        <a href="add_customer.php" class="btn btn-dark btn-sm ml-3">Add Emp</a>
+                    <?php endif; ?>
+                    <!-- print page command -->
+                    <button onclick="window.print()" class="justify-content-right btn btn-primary btn-sm mr-2">Print</button>
+                    <script>
+                        function printPage() {
+                            window.print();
+                        }
+                    </script>
+                    <script>
+                        function printDiv(divId) {
+                            var content = document.getElementById(divId).innerHTML;
+                            var originalContent = document.body.innerHTML;
 
-                    document.body.innerHTML = content;
-                    window.print();
-                    document.body.innerHTML = originalContent;
-                }
-             </script>
-        <!-- print page command ends-->
-            </h6>
-            
-        <!-- button for JS table search -->
-            <input type="text" id="searchInput" class="form-control w-25 font-weight text-primary" placeholder="Search Employee..." onkeyup="searchTable()">
-        </div>
+                            document.body.innerHTML = content;
+                            window.print();
+                            document.body.innerHTML = originalContent;
+                        }
+                    </script>
+                    <!-- print page command ends-->
+                </h6>
+                
+                <!-- button for JS table search -->
+                <input type="text" id="searchInput" class="form-control w-25 font-weight text-primary" placeholder="Search Employee..." onkeyup="searchTable()">
+            </div>
 
             <div class="card-body">
                 <table id="sortableTable" class="table table-responsive table-bordered">
@@ -442,7 +486,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         <?php
                         
                         $stmt = $connection->prepare("SELECT * FROM customer ORDER BY cus_name ASC");
-
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $i = 1;
@@ -465,50 +508,50 @@ document.addEventListener("DOMContentLoaded", function () {
                                     $asset_stmt->execute();
                                     $asset_result = $asset_stmt->get_result();
                                     while ($asset_row = $asset_result->fetch_assoc()) { 
-                                    $asset_id_based_on_customer_id = $asset_row['id'];
+                                        $asset_id_based_on_customer_id = $asset_row['id'];
                                         ?>
-                                    <a href="view_asset.php?id=<?php echo  $asset_id_based_on_customer_id; ?>"> 
-                                        <li class="list-group-item"><?= htmlspecialchars($asset_row['AssetCode']); ?></li>
-                                    </a>
-                                       
+                                        <a href="view_asset.php?id=<?php echo  $asset_id_based_on_customer_id; ?>"> 
+                                            <li class="list-group-item"><?= htmlspecialchars($asset_row['AssetCode']); ?></li>
+                                        </a>
+                                        
                                     <?php }
                                     $asset_stmt->close();
                                     ?>
                                 </td>
                                 <td>
                                     <?php
-                                        if ($row['status'] == '1') {
-                                            echo 'Active';
-                                        } elseif ($row['status'] == '2') {
-                                            echo '<p class="text-alert">Archived</p>';
-                                        } else {
-                                            echo '<p class="text-danger">Deactive</p>';
+                                    if ($row['status'] == '1') {
+                                        echo 'Active';
+                                    } elseif ($row['status'] == '2') {
+                                        echo '<p class="text-alert">Archived</p>';
+                                    } else {
+                                        echo '<p class="text-danger">Deactive</p>';
 
-                                        }
+                                    }
                                     ?>
                                 </td>
 
                                 <td><?= $row['cus_date'] . ' by ' . $the_user; ?></td>
                                 <td><?= $row['date_updated'] . ' by ' . $the_user; ?></td>
                                 <td>
-                                <div class="btn-group">
-                                    <?php if ($assign_role == 1){ ?>                                            
-                                        <a href="managecustomer_active.php?assign=<?= $row['id']; ?>" class="btn btn-secondary btn-sm">
-                                            <i class="fas fa-user-plus"></i> Assign
-                                        </a>
-                                    <?php } ?>
-                                    <?php if ($update_role == 1){ ?>                                            
-                                        <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-edit"></i> Update
-                                        </a>
-                                    <?php } ?>
-                                    <?php if ($delete_role == 1){ ?>
-                                        <a href="managecustomer_active.php?delete=<?= $row['id']; ?>" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash-alt"></i> Delete
-                                        </a>
-                                    <?php } ?>
-                                </div>
-                            </td>
+                                    <div class="btn-group">
+                                        <?php if ($assign_role == 1){ ?>                                            
+                                            <a href="managecustomer_active.php?assign=<?= $row['id']; ?>" class="btn btn-secondary btn-sm">
+                                                <i class="fas fa-user-plus"></i> Assign
+                                            </a>
+                                        <?php } ?>
+                                        <?php if ($update_role == 1){ ?>                                            
+                                            <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i> Update
+                                            </a>
+                                        <?php } ?>
+                                        <?php if ($delete_role == 1){ ?>
+                                            <a href="managecustomer_active.php?delete=<?= $row['id']; ?>" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </a>
+                                        <?php } ?>
+                                    </div>
+                                </td>
 
                             </tr>
                             <?php
@@ -543,8 +586,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Compare as numbers if possible, otherwise as strings
             const compare = isNaN(cellA) || isNaN(cellB)
-                ? cellA.localeCompare(cellB)
-                : parseFloat(cellA) - parseFloat(cellB);
+            ? cellA.localeCompare(cellB)
+            : parseFloat(cellA) - parseFloat(cellB);
 
             return isAscending ? compare : -compare;
         });
@@ -593,7 +636,7 @@ if (isset($_GET['delete'])) {
 
 
 
-    </tbody>
+</tbody>
 </table>
 </div>
 </div>
