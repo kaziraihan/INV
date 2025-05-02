@@ -231,30 +231,45 @@
                         </div>
                         
                         <div class="form-group col-md-4">
-                            <?php
-                            if (!empty($image)) {
-                                $uniqueId = uniqid('img_'); // ensures unique modal ID
-                            ?>
-                                <!-- Thumbnail -->
-                                <img src="img/customer/<?php echo htmlspecialchars($image); ?>" 
-                                    alt="Customer Image"
-                                    style="width: 100%; height :auto; cursor: pointer; border: 1px solid #007bff;"
+    <?php
+    if (!empty($image)) {
+        $uniqueId = uniqid('preview_'); 
+        $filePath = "img/customer/" . htmlspecialchars($image);
+        $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+    ?>
+        <!-- Thumbnail / File Button -->
+        <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])): ?>
+            <img src="<?php echo $filePath; ?>" 
+                alt="Customer File"
+                style="width: 100%; height: auto; cursor: pointer; border: 1px solid #007bff;"
+                data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueId; ?>">
+        <?php elseif ($fileExtension === 'pdf'): ?>
+            <div style="width: 100%; padding: 20px; border: 1px solid #007bff; text-align: center; cursor: pointer;"
+                data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueId; ?>">
+                <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                <p>View PDF</p>
+            </div>
+        <?php endif; ?>
 
-                                   
-                                    data-bs-target="#<?php echo $uniqueId; ?>">
 
-                                <!-- Modal -->
-                                <div class="modal fade" id="<?php echo $uniqueId; ?>" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-body text-center">
-                                                <img src="img/customer/<?php echo htmlspecialchars($image); ?>" class="img-fluid rounded" alt="Customer Full Image">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php } ?>
-                        </div>
+        <div class="modal fade" id="<?php echo $uniqueId; ?>" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                            <img src="<?php echo $filePath; ?>" class="img-fluid rounded" alt="Customer Full Image">
+                        <?php elseif ($fileExtension === 'pdf'): ?>
+                            <embed src="<?php echo $filePath; ?>" type="application/pdf" width="100%" height="600px" />
+                        <?php else: ?>
+                            <p>Unsupported file type.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+</div>
+
 
                     </div><br/><hr>
                             <div class="row m-1">
