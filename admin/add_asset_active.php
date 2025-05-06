@@ -402,18 +402,21 @@ function sortTable(columnIndex) {
                         <input type="text" name="AssetCode" id="AssetCode" class="form-control" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="Company">Company *</label>
-                        <select name="Company" id="Company" class="form-control" required>
-                            <option value="">Select Company</option>
-                            <option value="NSBD">NSBD</option>
-                            <option value="BDBD">BDBD</option>
-                        </select>
+                    
+                    <div class="d-flex flex-wrap gap-3">
+                    <div class="form-group flex-fill mr-2">
+                    <label for="Company">Company *</label>
+                    <select name="Company" id="Company" class="form-control" required>
+                        <option value="">Select Company</option>
+                        <option value="BDBD" selected>BDBD</option>
+                        <option value="NSBD">NSBD</option>
+                    </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="qty">Quantity *</label>
-                        <input type="number" name="qty" id="qty" class="form-control" value="1" required>
+                        <div class="form-group">
+                            <label for="qty">Quantity *</label>
+                            <input type="number" name="qty" id="qty" class="form-control" value="1" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -439,16 +442,49 @@ function sortTable(columnIndex) {
                         <input type="date" name="PurchaseDate" id="PurchaseDate" class="form-control" required>
                     </div>
 
-                    <div class="form-group">
+
+                    <div class="d-flex flex-wrap gap-3">
+                    <div class="form-group flex-fill mr-2">
                         <label for="DepnStartPeriod">Depreciation Start Period</label>
-                        <input type="date" name="DepnStartPeriod" id="DepnStartPeriod" class="form-control">
+                        <select name="DepnStartPeriod" id="DepnStartPeriod" class="form-control" required>
+                            <option value="">Select Period</option>
+                            <option value="P1">P1</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="P5">P5</option>
+                            <option value="P6">P6</option>
+                            <option value="P7">P7</option>
+                            <option value="P8">P8</option>
+                            <option value="P9">P9</option>
+                            <option value="P10">P10</option>
+                            <option value="P11">P11</option>
+                            <option value="P12">P12</option>
+                        </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group flex-fill">
                         <label for="DepnEndPeriod">Depreciation End Period</label>
-                        <input type="date" name="DepnEndPeriod" id="DepnEndPeriod" class="form-control">
+                        <select name="DepnEndPeriod" id="DepnEndPeriod" class="form-control" required>
+                            <option value="">Select Period</option>
+                            <option value="P1">P1</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="P5">P5</option>
+                            <option value="P6">P6</option>
+                            <option value="P7">P7</option>
+                            <option value="P8">P8</option>
+                            <option value="P9">P9</option>
+                            <option value="P10">P10</option>
+                            <option value="P11">P11</option>
+                            <option value="P12">P12</option>
+                        </select>
                     </div>
+                </div>
 
+
+                            
                     <div class="form-group">
                         <label for="Disposed">Disposed</label>
                         <select name="Disposed" id="Disposed" class="form-control" required>
