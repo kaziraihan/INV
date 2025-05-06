@@ -88,8 +88,8 @@ if (isset($_GET['id'])) {
                             input("Quantity", "qty", $asset['qty'], "number");
                             input("Description", "AssetDescription", $asset['AssetDescription']);
                             input("Purchase Date", "PurchaseDate", $asset['PurchaseDate'], "date", false);
-                            input("Depreciation Start", "DepnStartPeriod", $asset['DepnStartPeriod'], "date", false);
-                            input("Depreciation End", "DepnEndPeriod", $asset['DepnEndPeriod'], "date", false);
+                            input("Depreciation Start", "DepnStartPeriod", $asset['DepnStartPeriod'], "text", false) ; 
+                            input("Depreciation End", "DepnEndPeriod", $asset['DepnEndPeriod'], "text", false);
                             input("Serial Number", "SN", $asset['SN'], "text", false);
                             input("Remark", "Remark", $asset['Remark'], "text", false);
                             ?>
