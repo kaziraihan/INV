@@ -279,9 +279,12 @@ if (isset($_GET['id'])) {
                 echo "<td>" . htmlspecialchars($row['assettype']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['AssetDescription']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['PurchaseDate']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['DepnStartPeriod']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['DepnEndPeriod']) . "</td>";
-
+                echo "<td>" . htmlspecialchars($row['DepnStartPeriod']) . " / " . 
+                (new DateTime($row['PurchaseDate']))->modify('+1 months')->format('d-m-Y') . "</td>";
+           
+                echo "<td>" . htmlspecialchars($row['DepnEndPeriod']) . " / " . 
+                (new DateTime($row['PurchaseDate']))->modify('+3 years')->format('d-m-Y') . "</td>";
+           
                 $status = $row['Disposed'] == 0 ? "Active" : ($row['Disposed'] == 9 ? "Archived" : htmlspecialchars($row['Disposed']));
                 echo "<td>$status</td>";
 
