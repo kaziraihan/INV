@@ -392,8 +392,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="form-group">
                         <label for="Company">Company</label>
                         <select class="form-control" id="Company" name="Company" required>
+                             <option value="BDBD">BDBD</option>
                             <option value="NSBD">NSBD</option>
-                            <option value="BDBD">BDBD</option>
+                           
                         </select>
                     </div>
                     <div class="form-group">

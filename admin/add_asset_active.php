@@ -87,14 +87,44 @@ if (isset($_GET['id'])) {
                             input("Company", "Company", $asset['Company']);
                             input("Quantity", "qty", $asset['qty'], "number");
                             input("Description", "AssetDescription", $asset['AssetDescription']);
-                            input("Purchase Date", "PurchaseDate", $asset['PurchaseDate'], "date", false);
-                            input("Depreciation Start", "DepnStartPeriod", $asset['DepnStartPeriod'], "date", false);
-                            input("Depreciation End", "DepnEndPeriod", $asset['DepnEndPeriod'], "date", false);
                             input("Serial Number", "SN", $asset['SN'], "text", false);
                             input("Remark", "Remark", $asset['Remark'], "text", false);
+                            input("Purchase Date", "PurchaseDate", $asset['PurchaseDate'], "date", false);
                             ?>
 
                             <!-- Asset Type Dropdown -->
+
+                            
+                            <div class="col-md-6 mb-3">
+                            <label for="DepnStartPeriod">Depreciation Start Period</label>
+                                <select name="DepnStartPeriod" id="DepnStartPeriod" class="form-control" required>
+                                    <?php
+                                    $periods = range(1, 12);
+                                    foreach ($periods as $p) {
+                                        $val = "P" . $p;
+                                        $selected = ($asset['DepnStartPeriod'] === $val) ? 'selected' : '';
+                                        echo "<option value=\"$val\" $selected>$val</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                            <label for="DepnStartPeriod">Depreciation End Period</label>
+                                <select name="DepnEndPeriod" id="DepnEndPeriod" class="form-control" required>
+                                    <?php
+                                    $periods = range(1, 12);
+                                    foreach ($periods as $p) {
+                                        $val = "P" . $p;
+                                        $selected = ($asset['DepnEndPeriod'] === $val) ? 'selected' : '';
+                                        echo "<option value=\"$val\" $selected>$val</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+
+
                             <div class="col-md-6 mb-3">
                                 <label for="assettype">Asset Type *</label>
                                 <select name="assettype" class="form-control" required>
@@ -279,9 +309,12 @@ if (isset($_GET['id'])) {
                 echo "<td>" . htmlspecialchars($row['assettype']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['AssetDescription']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['PurchaseDate']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['DepnStartPeriod']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['DepnEndPeriod']) . "</td>";
-
+                echo "<td>" . htmlspecialchars($row['DepnStartPeriod']) . " / " . 
+                (new DateTime($row['PurchaseDate']))->modify('+1 months')->format('d-m-Y') . "</td>";
+           
+                echo "<td>" . htmlspecialchars($row['DepnEndPeriod']) . " / " . 
+                (new DateTime($row['PurchaseDate']))->modify('+3 years')->format('d-m-Y') . "</td>";
+           
                 $status = $row['Disposed'] == 0 ? "Active" : ($row['Disposed'] == 9 ? "Archived" : htmlspecialchars($row['Disposed']));
                 echo "<td>$status</td>";
 
@@ -402,18 +435,21 @@ function sortTable(columnIndex) {
                         <input type="text" name="AssetCode" id="AssetCode" class="form-control" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="Company">Company *</label>
-                        <select name="Company" id="Company" class="form-control" required>
-                            <option value="">Select Company</option>
-                            <option value="NSBD">NSBD</option>
-                            <option value="BDBD">BDBD</option>
-                        </select>
+                    
+                    <div class="d-flex flex-wrap gap-3">
+                    <div class="form-group flex-fill mr-2">
+                    <label for="Company">Company *</label>
+                    <select name="Company" id="Company" class="form-control" required>
+                        <option value="">Select Company</option>
+                        <option value="BDBD" selected>BDBD</option>
+                        <option value="NSBD">NSBD</option>
+                    </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="qty">Quantity *</label>
-                        <input type="number" name="qty" id="qty" class="form-control" value="1" required>
+                        <div class="form-group">
+                            <label for="qty">Quantity *</label>
+                            <input type="number" name="qty" id="qty" class="form-control" value="1" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -439,16 +475,49 @@ function sortTable(columnIndex) {
                         <input type="date" name="PurchaseDate" id="PurchaseDate" class="form-control" required>
                     </div>
 
-                    <div class="form-group">
+
+                    <div class="d-flex flex-wrap gap-3">
+                    <div class="form-group flex-fill mr-2">
                         <label for="DepnStartPeriod">Depreciation Start Period</label>
-                        <input type="date" name="DepnStartPeriod" id="DepnStartPeriod" class="form-control">
+                        <select name="DepnStartPeriod" id="DepnStartPeriod" class="form-control" required>
+                            <option value="">Select Period</option>
+                            <option value="P1">P1</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="P5">P5</option>
+                            <option value="P6">P6</option>
+                            <option value="P7">P7</option>
+                            <option value="P8">P8</option>
+                            <option value="P9">P9</option>
+                            <option value="P10">P10</option>
+                            <option value="P11">P11</option>
+                            <option value="P12">P12</option>
+                        </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group flex-fill">
                         <label for="DepnEndPeriod">Depreciation End Period</label>
-                        <input type="date" name="DepnEndPeriod" id="DepnEndPeriod" class="form-control">
+                        <select name="DepnEndPeriod" id="DepnEndPeriod" class="form-control" required>
+                            <option value="">Select Period</option>
+                            <option value="P1">P1</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="P5">P5</option>
+                            <option value="P6">P6</option>
+                            <option value="P7">P7</option>
+                            <option value="P8">P8</option>
+                            <option value="P9">P9</option>
+                            <option value="P10">P10</option>
+                            <option value="P11">P11</option>
+                            <option value="P12">P12</option>
+                        </select>
                     </div>
+                </div>
 
+
+                            
                     <div class="form-group">
                         <label for="Disposed">Disposed</label>
                         <select name="Disposed" id="Disposed" class="form-control" required>

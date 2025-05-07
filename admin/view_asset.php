@@ -86,10 +86,11 @@ include "includes/header.php";  ?>
                 <li class="list-group-item"><strong>Quantity:</strong> <?= $asset['qty']; ?></li>
                 <li class="list-group-item"><strong>Asset Type:</strong> <?= $asset['assettype']; ?></li>
                 <li class="list-group-item"><strong>Description:</strong> <?= $asset['AssetDescription']; ?></li>
-                <li class="list-group-item"><strong>Purchase Date:</strong> <?= $asset['PurchaseDate']; ?></li>
                 <li class="list-group-item"><strong>SN:</strong> <?= $asset['SN']; ?></li>
+                <li class="list-group-item"><strong>Purchase Date:</strong> <?= (new DateTime($asset['PurchaseDate']))->format('d-m-Y'); ?> </li>
+                <li class="list-group-item"><strong>Depn Start Period:</strong> <?= $asset['DepnStartPeriod']; ?> / <?= (new DateTime($asset['PurchaseDate']))->modify('+1 months')->format('Y-m-d'); ?></li>
+                <li class="list-group-item"><strong>Depn End Period:</strong> <?= $asset['DepnEndPeriod']; ?> /   <?= (new DateTime($asset['PurchaseDate']))->modify('+3 years')->format('Y-m-d'); ?></li>
                 <li class="list-group-item"><strong>Supplier:</strong> <?= $asset['Supplier']; ?></li>
-                <li class="list-group-item"><strong>Depn End Period:</strong> <?= $asset['DepnEndPeriod']; ?></li>
                 <li class="list-group-item"><strong>Used By:</strong> <?= $asset['Usedby'] ?? 'Unused'; ?></li>
                 <li class="list-group-item"><strong>Assigned Date:</strong> <?= $asset['assigndate']; ?></li>
             </ul>
