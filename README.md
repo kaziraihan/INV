@@ -1,3 +1,4 @@
+
 # 🖥️ IT Asset Inventory System
 
 A lightweight, web-based IT Asset Management system designed to efficiently track assets, their assignment history, and employee/customer details. Built with PHP, MySQL, and Bootstrap — perfect for small to medium-sized organizations seeking an open-source solution for managing IT infrastructure.
@@ -83,7 +84,4 @@ Maintainer: raihan
 If you find this project helpful, consider supporting its development!
 ( I'd share if you are keen to )
 Your support helps maintain and improve this project. Thank you! ❤️
-
-
-
 
