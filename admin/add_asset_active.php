@@ -58,6 +58,7 @@ if (isset($_GET['id'])) {
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
+    
             <div class="card shadow mb-4">
                 <div class="card-body">
                     <form method="POST">
@@ -81,7 +82,6 @@ if (isset($_GET['id'])) {
                             ?>
 
                             <!-- Asset Type Dropdown -->
-
 
                             <div class="col-md-6 mb-3">
                             <label for="DepnStartPeriod">Depreciation Start Period</label>
@@ -116,17 +116,6 @@ if (isset($_GET['id'])) {
                             <div class="col-md-6 mb-3">
                                 <label for="assettype">Asset Type *</label>
                                 <select name="assettype" class="form-control" required>
-
-    
-          
-            
-    
-
-          
-          Expand Down
-    
-    
-  
                                     <option value="<?php echo htmlspecialchars($asset['assettype']); ?>" selected><?php echo htmlspecialchars($asset['assettype']); ?></option>
                                     <?php foreach ($categories as $cat): ?>
                                         <?php if ($cat !== $asset['assettype']) { ?>
@@ -416,7 +405,7 @@ function sortTable(columnIndex) {
                     <div class="form-group flex-fill mr-2">
                         <label for="DepnStartPeriod">Depreciation Start Period</label>
                         <select name="DepnStartPeriod" id="DepnStartPeriod" class="form-control" required>
-                            <option value="">Select Period</option>
+                            <option value="<? echo $_POST['DepnStartPeriod'];?>">Select Period</option>
                             <option value="P1">P1</option>
                             <option value="P2">P2</option>
                             <option value="P3">P3</option>
@@ -434,7 +423,7 @@ function sortTable(columnIndex) {
                     <div class="form-group flex-fill">
                         <label for="DepnEndPeriod">Depreciation End Period</label>
                         <select name="DepnEndPeriod" id="DepnEndPeriod" class="form-control" required>
-                            <option value="">Select Period</option>
+                            <option value="<? echo $_POST['DepnEndPeriod']; ?>">Select Period</option>
                             <option value="P1">P1</option>
                             <option value="P2">P2</option>
                             <option value="P3">P3</option>

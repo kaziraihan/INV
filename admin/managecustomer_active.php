@@ -36,8 +36,8 @@
         // $asset_id = "AssetID123";
         // $status = "Assigned";
 
-        // Insert into temp table
-        $insert_query = "INSERT INTO temp (emp_id, emp_code, emp_name, emp_dept) 
+        // Insert into asset_assigned table
+        $insert_query = "INSERT INTO asset_assigned (emp_id, emp_code, emp_name, emp_dept) 
         VALUES (?, ?, ?, ?)";
         $stmt1 = $connection->prepare($insert_query);
         $stmt1->bind_param("isss", $cus_id, $cus_code, $cus_name, $cus_address);
@@ -78,6 +78,7 @@
         $row = $result->fetch_assoc();
         $image =  htmlspecialchars($row['image']);
         ?>
+       
 
         <div class="row">
             <div class="col-md-12">
@@ -159,9 +160,16 @@
                                 </div>
 
                             <div class="form-group col-md-4">
-                                <label for="exampleFormControlFile1">Upload Akowledgment ( only Jpg )</label>
-                                <input type="file" class="form-control-file" name="image"> 
+                                <label for="exampleFormControlFile1">Upload Acknowledgments ( single or multiple files))</label>
+                                <input type="file" class="form-control-file" name="image[]" multiple accept=".jpg,.jpeg">
+                                <br>
+                                 <a href="view_gallery.php?customer_id=<?= $cus_get_id; ?>" class="btn btn-primary btn-sm">
+                                <i class="fa fa-eye" aria-hidden="true"></i> View uploaded files
+                            </a>    
                             </div>
+                            
+                           
+                        
                                   
                                 <div class="form-group col-md-4">
                                     <Br/>
@@ -204,11 +212,11 @@
                                
                                <?php
                             // Make sure $cus_get_id has a value
-                               $query = "SELECT * FROM temp WHERE emp_id = '$cus_get_id'";
+                               $query = "SELECT * FROM asset_assigned WHERE emp_id = '$cus_get_id'";
                                $result = mysqli_query($connection, $query);
 
                                while ($row = mysqli_fetch_assoc($result)) {
-                                 $asset_id = $row['asset_id'];// showing the assed id drim temp table
+                                 $asset_id = $row['asset_id'];// showing the assed id drim asset_assigned table
                                 // Fetch from asset_list based on asset_id
                                  $query2 = "SELECT * FROM asset_list WHERE id = ?";
                                  $stmt = mysqli_prepare($connection, $query2);
@@ -231,45 +239,9 @@
                         </div>
                         
                         <div class="form-group col-md-4">
-    <?php
-    if (!empty($image)) {
-        $uniqueId = uniqid('preview_'); 
-        $filePath = "img/customer/" . htmlspecialchars($image);
-        $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-    ?>
-        <!-- Thumbnail / File Button -->
-        <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])): ?>
-            <img src="<?php echo $filePath; ?>" 
-                alt="Customer File"
-                style="width: 100%; height: auto; cursor: pointer; border: 1px solid #007bff;"
-                data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueId; ?>">
-        <?php elseif ($fileExtension === 'pdf'): ?>
-            <div style="width: 100%; padding: 20px; border: 1px solid #007bff; text-align: center; cursor: pointer;"
-                data-bs-toggle="modal" data-bs-target="#<?php echo $uniqueId; ?>">
-                <i class="fas fa-file-pdf fa-3x text-danger"></i>
-                <p>View PDF</p>
-            </div>
-        <?php endif; ?>
 
 
-        <div class="modal fade" id="<?php echo $uniqueId; ?>" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                            <img src="<?php echo $filePath; ?>" class="img-fluid rounded" alt="Customer Full Image">
-                        <?php elseif ($fileExtension === 'pdf'): ?>
-                            <embed src="<?php echo $filePath; ?>" type="application/pdf" width="100%" height="600px" />
-                        <?php else: ?>
-                            <p>Unsupported file type.</p>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php } ?>
 </div>
-
 
                     </div><br/><hr>
                             <div class="row m-1">
@@ -309,11 +281,42 @@ if (isset($_POST['update-customer'])) {
     $asset = trim($_POST['asset']);
     $status = intval($_POST['status']); // Ensure status is numeric
 
-    
-    $image 				= $_FILES['image']['name'];
-    $image_tmp 			= $_FILES['image']['tmp_name'];
+if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
+    $customer_id = intval($_POST['cus_id']); // Ensure it's an integer
+    $total_files = count($_FILES['image']['name']);
 
-    move_uploaded_file($image_tmp, "img/customer/" .$image);
+    for ($i = 0; $i < $total_files; $i++) {
+        $file_name = $_FILES['image']['name'][$i];
+        $file_tmp = $_FILES['image']['tmp_name'][$i];
+
+        // Validate file extension
+        $fileExtension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        if (in_array($fileExtension, ['jpg', 'jpeg', 'pdf'])) {
+
+            // Unique filename to avoid overwrite
+            $uniqueFileName = uniqid('file_') . '_' . basename($file_name);
+            $destination = "img/customer/" . $uniqueFileName;
+            
+
+            if (move_uploaded_file($file_tmp, $destination)) {
+                // ✅ Insert file info into DB (customer_files table)
+                $stmt = $connection->prepare("INSERT INTO customer_files (customer_id, file_name, uploaded_at) VALUES (?, ?, NOW())");
+                $stmt->bind_param("is", $customer_id, $uniqueFileName);
+                $stmt->execute();
+
+                echo "<div class='alert alert-success'>Uploaded & Saved: $uniqueFileName</div>";
+            } else {
+                echo "<div class='alert alert-danger'>Failed to upload: $file_name</div>";
+            }
+
+        } else {
+            echo "<div class='alert alert-warning'>Invalid file type: $file_name</div>";
+        }
+    }
+}
+
+
+
 
     // Validate required fields
     if (empty($cus_name) || empty($emp_code) || empty($cus_address) || empty($cus_email) || empty($cus_phone)) {
@@ -648,14 +651,9 @@ if (isset($_GET['delete'])) {
     $stmt->close();
 }
 ?>
-
-
-
 </tbody>
 </table>
 </div>
 </div>
-
-
 
 <?php include "includes/footer.php"; ?>

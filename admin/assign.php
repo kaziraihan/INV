@@ -6,7 +6,7 @@
 
             <?php
             // Fetch the latest row by ID
-            $query = "SELECT * FROM temp ORDER BY id DESC LIMIT 1";
+            $query = "SELECT * FROM asset_assigned ORDER BY id DESC LIMIT 1";
             $result = mysqli_query($connection, $query);
 
             if ($result) {
