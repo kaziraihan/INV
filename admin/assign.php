@@ -6,7 +6,7 @@
 
             <?php
             // Fetch the latest row by ID
-            $query = "SELECT * FROM temp ORDER BY id DESC LIMIT 1";
+            $query = "SELECT * FROM asset_assigned ORDER BY id DESC LIMIT 1";
             $result = mysqli_query($connection, $query);
 
             if ($result) {
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Assign'])) {
              $asset_id;
              $temp_id;
             
-            $query = "UPDATE temp SET asset_id = '$asset_id', date_created = NOW() WHERE id = '$temp_id'";
+            $query = "UPDATE asset_assigned SET asset_id = '$asset_id', date_created = NOW() WHERE id = '$temp_id'";
             $Stat = mysqli_query($connection, $query);
 
             if ($Stat) {

@@ -52,9 +52,11 @@ include "includes/header.php";  ?>
             $customer_result = mysqli_query($connection, "SELECT emp_code, cus_name, cus_ref_no FROM customer WHERE status = '1'");
     ?>
     <!-- Asset Details Card -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary col-md-10">Asset Details</h6>
+<div class="d-flex">
+    <div class="col-md-6">
+    <div class="card shadow mb-4 ">
+        <div class="card-header py-3 justify-content-between align-items-center">
+       
             <?php if ($asset['Disposed'] == 0): ?>
                 <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#updateUsedByModal">Assign</button>
             <?php endif; ?>
@@ -78,19 +80,10 @@ include "includes/header.php";  ?>
                 <li class="list-group-item"><strong>Used By:</strong> <?= $asset['Usedby'] ?? 'Unused'; ?></li>
                 <li class="list-group-item"><strong>Assigned Date:</strong> <?= $asset['assigndate']; ?></li>
             </ul>
-
-    
-          
-            
-    
-
-          
-          Expand Down
-    
-    
-  
         </div>
     </div>
+    </div>
+    <div class="col-md-6">
     <!-- Additional Used By History -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -107,6 +100,7 @@ include "includes/header.php";  ?>
             </ul>
         </div>
     </div>
+    </div></div> </div>
     <!-- Assign Modal -->
     <div class="modal fade" id="updateUsedByModal" tabindex="-1" aria-labelledby="updateUsedByModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -135,9 +129,10 @@ include "includes/header.php";  ?>
             </form>
         </div>
     </div>
+    <div class="col-md-6 m-4">
     <?php if ($revoke_role == 1): ?>
         <a href="view_asset.php?delete=<?= $asset_id; ?>" class="btn btn-danger btn-sm">Revoke</a>
-    <?php endif; ?>
+    <?php endif; ?></div>
     <?php
         } else {
             echo "<div class='alert alert-danger'>No asset found with this ID.</div>";

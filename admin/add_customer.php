@@ -102,7 +102,7 @@
 									</div>
 
 									<div class="form-group">
-										<label for="exampleFormControlFile1">Upload Akowledgment ( only Jpg )</label>
+										<label for="exampleFormControlFile1">Emp Photo ( only Jpg )</label>
 										<input type="file" class="form-control-file" name="image" > 
 									</div>		
 								</div>
