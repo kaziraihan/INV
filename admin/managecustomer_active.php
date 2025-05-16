@@ -482,7 +482,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
             </div>
 
             <div class="card-body">
-                <table id="sortableTable" class="table table-responsive table-bordered">
+                <table id="sortableTable" class="table table-responsive table-striped   ">
                     <thead class="thead-dark">
                         <tr>
                             <th onclick="sortTable(0)">#</th>

@@ -69,9 +69,16 @@
                         <td><?php echo $row['qty']; ?></td>
                         <td><?php echo $row['assettype']; ?></td>
                         <td><?php echo $row['AssetDescription']; ?></td>
-                        <td><?php echo $row['PurchaseDate']; ?></td>
-                        <td><?php echo $row['DepnStartPeriod']; ?></td>
-                        <td><?php echo $row['DepnEndPeriod']; ?></td>
+                       <td>
+                        <?php 
+                        $purchaseDate = new DateTime($row['PurchaseDate']); 
+                        echo $purchaseDate->format('d-m-Y'); 
+                        ?>
+                    </td>
+                        <td><?php  echo htmlspecialchars($row['DepnStartPeriod']) . " / " . 
+                (new DateTime($row['PurchaseDate']))->modify('+1 months')->format('d-m-Y') ; ?></td>
+                        <td><?php    echo  htmlspecialchars($row['DepnEndPeriod']) . " / " . 
+                (new DateTime($row['PurchaseDate']))->modify('+3 years')->format('d-m-Y') ; ?></td>
                         <td><?php if ( $row['Disposed']== 0){  echo 'Active';} elseif ( $row['Disposed']== 9){  echo 'Archived';} else {echo $row['Disposed']; }; ?> </td>      
                         <td><?php echo $row['SN']; ?></td>
                         <td><?php echo $row['Supplier']; ?></td>
