@@ -37,6 +37,7 @@ while($row=mysqli_fetch_assoc($select_theme)){
   <div id="collapsefive2" class="collapse" aria-labelledby="headingfour" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
       <a class="collapse-item" href="add_asset_active.php"><i class="fas fa-tools mr-2"></i>Manage Asset</a>
+      <a class="collapse-item" href="view_temp.php"><i class="fas fa-tools mr-2"></i>Asset log</a>
     </div>
   </div>
 </li>
