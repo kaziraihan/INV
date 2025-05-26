@@ -75,14 +75,16 @@
           </button></h6>
         </div>
         <div class="card-body">
-          <table class="table table-striped">
-            <thead class="thead-dark">
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
+                    <!-- Supplier List Table -->
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Supplier Name</th>
+                              
+                                <th class="text-right"scope="col"> </th>
+                            </tr>
+                        </thead>
             <tbody>
               <?php
                 // Fetch all brands

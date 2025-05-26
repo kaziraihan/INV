@@ -1,46 +1,35 @@
-<?php 
-include "includes/header.php"; // Add your header file
-
-?>
+<?php include "includes/header.php"; ?>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">Employee Asset Assignment</h1>
-
+    
     <!-- Table Card -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 bg-primary text-white">
-            <h6 class="m-0 font-weight-bold">View Assigned Assets</h6>
+            <h6 class="m-0 font-weight-bold">Assigned Assets Summary</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover text-center" id="dataTable">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Employee ID</th>
-                            <th>Employee Code</th>
-                            <th>Employee Name</th>
-                            <th>Department</th>
-                            <th>Asset ID</th>
-                            <th>Asset Code</th>
-                        </tr>
-                    </thead>
+                <table class="table table-bordered table-hover text-left" id="dataTable">
+                 
                     <tbody>
                         <?php
-                        $query = "SELECT * FROM temp ORDER BY id DESC";
+                        $query = "
+                            SELECT aa.*, al.AssetCode 
+                            FROM asset_assigned AS aa
+                            LEFT JOIN asset_list AS al ON aa.asset_id = al.id
+                            WHERE aa.asset_id != '0'
+                            ORDER BY aa.id DESC
+                        ";
+
                         $result = mysqli_query($connection, $query);
                         $i = 1;
+
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<tr>";
-                            echo "<td>{$i}</td>";
-                            echo "<td>{$row['emp_id']}</td>";
-                            echo "<td>{$row['emp_code']}</td>";
-                            echo "<td>{$row['emp_name']}</td>";
-                            echo "<td>{$row['emp_dept']}</td>";
-                            echo "<td>{$row['asset_id']}</td>";
-                            echo "<td>{$row['asset_code']}</td>";
+                           // echo "<td>{$i}</td>";
+                            echo "<td>On {$row['date_created']}, device [{$row['AssetCode']}] was assigned to {$row['emp_code']} {$row['emp_name']}, from: {$row['emp_dept']}.</td>";
                             echo "</tr>";
                             $i++;
                         }
