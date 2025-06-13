@@ -101,7 +101,7 @@
                 startY: 20,
                 theme: 'grid'
             });
-            doc.save("Asset_Report.pdf");
+            doc.save("Asset_Report_desktop.pdf");
         }
     </script>
 </body>

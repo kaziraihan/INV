@@ -14,7 +14,10 @@
                     <a class="list-group-item list-group-item-action" href="report/desktop_asset_report.php" target="reportFrame">Desktop List</a>
                     <a class="list-group-item list-group-item-action" href="report/mobile_asset_report.php" target="reportFrame">Mobile List</a>
                     <a class="list-group-item list-group-item-action" href="report/unused_laptop_asset_report.php" target="reportFrame">Unassigned Laptop List</a>
-                    <a class="list-group-item list-group-item-action" href="report/unused_desktop_asset_report.php" target="reportFrame">Unassigned Desktop List</a>
+                    <a class="list-group-item list-group-item-action" href="report/unused_desktop_asset_report.php" target="reportFrame">Unassigned Desktop List</a>     
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0">Disposal Reports</h6>
+                </div>
                     <a class="list-group-item list-group-item-action" href="report/diposed_list_first_slot.php" target="reportFrame">Disposed List first slot</a>
                     <a class="list-group-item list-group-item-action" href="report/diposed_list_second_slot.php" target="reportFrame">Disposed List second slot</a>
                     <a class="list-group-item list-group-item-action" href="report/diposed_list_third_slot.php" target="reportFrame">Disposed List third slot</a>

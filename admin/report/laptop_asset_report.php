@@ -52,6 +52,7 @@
                     <th>Supplier</th>
                     <th>Remark</th>
                     <th>UsedBy</th>
+                    <th>Dept</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,7 +101,7 @@
                 startY: 20,
                 theme: 'grid'
             });
-            doc.save("Asset_Report.pdf");
+            doc.save("Asset_Report_laptop.pdf");
         }
     </script>
 </body>
