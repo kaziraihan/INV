@@ -121,10 +121,11 @@
 											</select>
 											<input  type="submit" name="Yes" class="btn btn-<?php echo $theme; ?> btn-sm ml-2" value="Set">
 										</form>
-										
-										
 									</div>
 								</div>
+
+								<hr>
+								<div><a href="backup.php" class="btn btn-primary btn-sm">Database backup</a></div>
 							</div>
 						</div>
 					</div>
