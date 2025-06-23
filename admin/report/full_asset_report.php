@@ -52,15 +52,19 @@
                     <th>S/N</th>
                     <th>Supplier</th>
                     <th>Remark</th>
+                   <th>Emp</th>
                     <th>UsedBy</th>
+                    <th>Dept</th>
                 </tr>
             </thead>
             <tbody>
+                
                 <?php
                 include "../../includes/db.php";
                 $query = "SELECT * FROM asset_list WHERE Disposed = 0";
                 $result = mysqli_query($connection, $query);
                 $i = 1;
+                
                 while ($row = mysqli_fetch_assoc($result)) { ?>
                     <tr>
                         <td><?php echo $i++; ?></td>
@@ -74,6 +78,7 @@
                         $purchaseDate = new DateTime($row['PurchaseDate']); 
                         echo $purchaseDate->format('d-m-Y'); 
                         ?>
+                        
                     </td>
                         <td><?php  echo htmlspecialchars($row['DepnStartPeriod']) . " / " . 
                 (new DateTime($row['PurchaseDate']))->modify('+1 months')->format('d-m-Y') ; ?></td>
@@ -83,7 +88,22 @@
                         <td><?php echo $row['SN']; ?></td>
                         <td><?php echo $row['Supplier']; ?></td>
                         <td><?php echo $row['Remark']; ?></td>
+                        <td>
+                        <?php
+                            $usedby_id = $row['usedbyid'];
+                            $emp_query = "SELECT emp_code FROM customer WHERE id = '$usedby_id'";
+                            $emp_result = mysqli_query($connection, $emp_query);
+                            if ($emp_result && mysqli_num_rows($emp_result) > 0) {
+                                $emp = mysqli_fetch_assoc($emp_result);
+                                echo  htmlspecialchars($emp['emp_code']);
+                            } else {
+                                echo "Unused";
+                            }
+                        ?>
+                        </td>
+
                         <td><?php echo empty($row['Usedby']) ? 'Unused' : $row['Usedby']; ?></td>
+                       <td><?php echo empty($row['Usedby']) ? 'N/A' : $row['usedbydept']; ?></td>
                     </tr>
                 <?php } ?>
             </tbody>

@@ -51,6 +51,7 @@
                     <th>S/N</th>
                     <th>Supplier</th>
                     <th>Remark</th>
+                   <th>Emp</th>
                     <th>UsedBy</th>
                     <th>Dept</th>
                 </tr>
@@ -83,6 +84,19 @@
                         <td><?php echo $row['SN']; ?></td>
                         <td><?php echo $row['Supplier']; ?></td>
                         <td><?php echo $row['Remark']; ?></td>
+                        <td>
+                <?php
+                    $usedby_id = $row['usedbyid'];
+                    $emp_query = "SELECT emp_code FROM customer WHERE id = '$usedby_id'";
+                    $emp_result = mysqli_query($connection, $emp_query);
+                    if ($emp_result && mysqli_num_rows($emp_result) > 0) {
+                        $emp = mysqli_fetch_assoc($emp_result);
+                        echo  htmlspecialchars($emp['emp_code']);
+                    } else {
+                        echo "Unused";
+                    }
+                ?>
+                </td>
                         <td><?php echo empty($row['Usedby']) ? 'Unused' : $row['Usedby']; ?></td>
                         <td><?php echo empty($row['Usedby']) ? 'N/A' : $row['usedbydept']; ?></td>
                     </tr>
