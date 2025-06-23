@@ -539,11 +539,11 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
                                 <td>
                                     <?php
                                     if ($row['status'] == '1') {
-                                        echo 'Active';
+                                        echo '<p class="alert alert-success" >Active</p>';
                                     } elseif ($row['status'] == '2') {
-                                        echo '<p class="text-alert">Archived</p>';
+                                        echo '<p  class="alert alert-warning">Archived</p>';
                                     } else {
-                                        echo '<p class="text-danger">Deactive</p>';
+                                        echo '<p class="alert alert-danger>Deactive</p>';
 
                                     }
                                     ?>
@@ -551,25 +551,34 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
 
                                 <td><?= $row['cus_date'] . ' by ' . $the_user; ?></td>
                                 <td><?= $row['date_updated'] . ' by ' . $the_user; ?></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <?php if ($assign_role == 1){ ?>                                            
-                                            <a href="managecustomer_active.php?assign=<?= $row['id']; ?>" class="btn btn-secondary btn-sm">
-                                                <i class="fas fa-user-plus"></i> Assign
-                                            </a>
-                                        <?php } ?>
-                                        <?php if ($update_role == 1){ ?>                                            
-                                            <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-edit"></i> Update
-                                            </a>
-                                        <?php } ?>
-                                        <?php if ($delete_role == 1){ ?>
-                                            <a href="managecustomer_active.php?delete=<?= $row['id']; ?>" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-trash-alt"></i> Delete
-                                            </a>
-                                        <?php } ?>
-                                    </div>
-                                </td>
+                             <td>
+    <div class="btn-group">
+        <?php if ($assign_role == 1){ ?>                                            
+            <a href="managecustomer_active.php?assign=<?= $row['id']; ?>" class="btn btn-secondary btn-sm" title="Assign">
+                <i class="fas fa-user-plus"></i>
+            </a>
+        <?php } ?>
+        <?php if ($update_role == 1){ ?>                                            
+            <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm" title="Edit">
+                <i class="fas fa-edit"></i>
+            </a>
+        <?php } ?>
+        <?php if ($delete_role == 1){ ?>
+            <a href="managecustomer_active.php?delete=<?= $row['id']; ?>" class="btn btn-danger btn-sm" title="Delete">
+                <i class="fas fa-trash-alt"></i>
+            </a>
+        <?php } ?>
+    </div>
+</td>
+<style>
+    .btn-group a span {
+        display: none;
+        margin-left: 5px;
+    }
+    .btn-group a:hover span {
+        display: inline;
+    }
+</style>
 
                             </tr>
                             <?php

@@ -77,7 +77,7 @@ include "includes/header.php";  ?>
                 <li class="list-group-item"><strong>Depn Start Period:</strong> <?= $asset['DepnStartPeriod']; ?> / <?= (new DateTime($asset['PurchaseDate']))->modify('+1 months')->format('Y-m-d'); ?></li>
                 <li class="list-group-item"><strong>Depn End Period:</strong> <?= $asset['DepnEndPeriod']; ?> /   <?= (new DateTime($asset['PurchaseDate']))->modify('+3 years')->format('Y-m-d'); ?></li>
                 <li class="list-group-item"><strong>Supplier:</strong> <?= $asset['Supplier']; ?></li>
-                <li class="list-group-item"><strong>Used By:</strong> <?= $asset['Usedby'] ?? 'Unused'; ?></li>
+                <li class="list-group-item"><strong>Used By:</strong> <?= $asset['Usedby'] ?? 'Unused'; ?> </li>
                 <li class="list-group-item"><strong>Assigned Date:</strong> <?= $asset['assigndate']; ?></li>
             </ul>
         </div>
