@@ -193,22 +193,26 @@
                                      "Used By ID: " . $row['usedbyid'] . "<br>";
                                      "Used By: " . $row['Usedby'] . "<br>";
                                      "Useing : " . $asset_code =  $row['AssetCode'] . "";  // Displaying all the information from each row
+                                    "Useing : " . $asset_type =  $row['assettype'] . ""; 
+                                     "Useing : " . $assigndate =  $row['assigndate'] . ""; 
                                      
                                      ?>
-
-                                     
-                                     
+                                    <table> <tr><td>
+                                    
                                      <!-- this is showing the asset name by ID for the asset that under emoloyees -->
                                      <a class ="btn btn-primary btn-sm m-1" href="view_asset.php?id=<?php echo  $row['id']; ?>"> 
-                                       <?= htmlspecialchars($asset_code) ?>
-                                   </a>
-
+                                       <?= htmlspecialchars($asset_code) ?> 
+                                      
+                                   </a> 
+                                    <?= htmlspecialchars($asset_type) ?> <!-- display device type -->
+                                     <?= htmlspecialchars($assigndate) ?> <!-- display device assign date -->
+                                        </td></tr></table>
                                    <?php
                                }
                                ?>
 
 
-                               <section class="mt-4">Previously Used :</section> 
+                               <section class="mt-4">Previously Used :</section>  
                                
                                <?php
                             // Make sure $cus_get_id has a value
