@@ -406,36 +406,36 @@ function sortTable(columnIndex) {
                         <label for="DepnStartPeriod">Depreciation Start Period</label>
                         <select name="DepnStartPeriod" id="DepnStartPeriod" class="form-control" required>
                             <option value="<? echo $_POST['DepnStartPeriod'];?>">Select Period</option>
-                            <option value="P1">P1</option>
-                            <option value="P2">P2</option>
-                            <option value="P3">P3</option>
-                            <option value="P4">P4</option>
-                            <option value="P5">P5</option>
-                            <option value="P6">P6</option>
-                            <option value="P7">P7</option>
-                            <option value="P8">P8</option>
-                            <option value="P9">P9</option>
-                            <option value="P10">P10</option>
-                            <option value="P11">P11</option>
-                            <option value="P12">P12</option>
+                            <option value="P1">P1 - feb</option>
+                            <option value="P2">P2 - mar</option>
+                            <option value="P3">P3 - apr</option>
+                            <option value="P4">P4 - may</option>
+                            <option value="P5">P5 - jun</option>
+                            <option value="P6">P6 - jul</option>
+                            <option value="P7">P7 - aug</option>
+                            <option value="P8">P8 - sep</option>
+                            <option value="P9">P9 - oct</option>
+                            <option value="P10">P10 - nov</option>
+                            <option value="P11">P11 - dec</option>
+                            <option value="P12">P12 - jan</option>
                         </select>
                     </div>
                     <div class="form-group flex-fill">
                         <label for="DepnEndPeriod">Depreciation End Period</label>
                         <select name="DepnEndPeriod" id="DepnEndPeriod" class="form-control" required>
                             <option value="<? echo $_POST['DepnEndPeriod']; ?>">Select Period</option>
-                            <option value="P1">P1</option>
-                            <option value="P2">P2</option>
-                            <option value="P3">P3</option>
-                            <option value="P4">P4</option>
-                            <option value="P5">P5</option>
-                            <option value="P6">P6</option>
-                            <option value="P7">P7</option>
-                            <option value="P8">P8</option>
-                            <option value="P9">P9</option>
-                            <option value="P10">P10</option>
-                            <option value="P11">P11</option>
-                            <option value="P12">P12</option>
+                            <option value="P1">P1 - feb</option>
+                            <option value="P2">P2 - mar</option>
+                            <option value="P3">P3 - apr</option>
+                            <option value="P4">P4 - may</option>
+                            <option value="P5">P5 - jun</option>
+                            <option value="P6">P6 - jul</option>
+                            <option value="P7">P7 - aug</option>
+                            <option value="P8">P8 - sep</option>
+                            <option value="P9">P9 - oct</option>
+                            <option value="P10">P10 - nov</option>
+                            <option value="P11">P11 - dec</option>
+                            <option value="P12">P12 - jan</option>
                         </select>
                     </div>
                 </div>
