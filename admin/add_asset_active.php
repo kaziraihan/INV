@@ -464,7 +464,7 @@ function sortTable(columnIndex) {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="UsedBy">Used By</label>
+                        <label for="UsedBy">Used By ( You can do this later )</label>
                         <select name="UsedBy" id="UsedBy" class="form-control">
                             <option value="">None</option>
                             <?php 
