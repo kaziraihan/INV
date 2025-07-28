@@ -546,8 +546,8 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
                                         echo '<p class="alert alert-success" >Active</p>';
                                     } elseif ($row['status'] == '2') {
                                         echo '<p  class="alert alert-warning">Archived</p>';
-                                    } else {
-                                        echo '<p class="alert alert-danger>Deactive</p>';
+                                    } else { 
+                                        echo '<p class="alert alert-danger">Deactive</p>';
 
                                     }
                                     ?>
