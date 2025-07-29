@@ -20,6 +20,7 @@
         $cus_name = $row['cus_name'];
         $cus_address = $row['cus_address'];
         $cus_email = $row['cus_email'];
+      
 
         // Output for debug
         /*
@@ -115,8 +116,8 @@
                                     <input type="text" name="cus_ref" class="form-control" 
                                     value="<?= ($row['cus_ref'] == '1') ? 'Manager' : (($row['cus_ref'] == '0') ? 'Not a manager' : htmlspecialchars($row['cus_ref'])); ?>" 
                                     required>
-
                                 </div>     
+                             
                                 
                                 <div class="form-group col-md-4">
                                     <label>Status</label>
@@ -134,7 +135,28 @@
                                     </div>
                                 </div>
 
-                                
+                                  <div class="form-group col-md-4">
+                                    <label>Emp type (NHC or Repl) </label>
+                                    <input type="text" name="emp_type" class="form-control" value="<?php
+                                        $emp_type = $row['emp_type']; 
+
+                                        if ($emp_type == "0") {
+                                            echo "New HC";
+                                        } else {
+                                            // Treat emp_type as customer ID and fetch details
+                                            $query = "SELECT emp_code, cus_name FROM customer WHERE id = '$emp_type'";
+                                            $result = mysqli_query($connection, $query);
+
+                                            if ($result && mysqli_num_rows($result) > 0) {
+                                                $customer = mysqli_fetch_assoc($result);
+                                                echo htmlspecialchars($customer['emp_code']) . " - " . htmlspecialchars($customer['cus_name']);
+                                            } else {
+                                                echo "Unknown ID ($emp_type)";
+                                            }
+                                        }
+                                        ?>" required>
+                                </div>
+
 
                                 <script>
                                     document.getElementById("statusSwitch").addEventListener("change", function() {
@@ -159,6 +181,7 @@
                                     </select>
                                 </div>
 
+
                             <div class="form-group col-md-4">
                                 <label for="exampleFormControlFile1">Upload Acknowledgments ( single or multiple files))</label>
                                 <input type="file" class="form-control-file" name="image[]" multiple accept=".jpg,.jpeg">
@@ -167,8 +190,8 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i> View uploaded files
                             </a>    
                             </div>
+
                             
-                           
                         
                                   
                                 <div class="form-group col-md-4">
@@ -239,6 +262,10 @@
 
                         </div>
 
+                        
+                          
+                           
+
                         <div class="form-group col-md-4">
                         </div>
                         
@@ -282,6 +309,7 @@ if (isset($_POST['update-customer'])) {
     $cus_phone = trim($_POST['cus_phone']);
     $cus_ref_no = trim($_POST['cus_ref_no']);
     $cus_ref = trim($_POST['cus_ref']);
+    $emp_type = trim($_POST['emp_type']);
     $asset = trim($_POST['asset']);
     $status = intval($_POST['status']); // Ensure status is numeric
 
@@ -303,7 +331,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
             
 
             if (move_uploaded_file($file_tmp, $destination)) {
-                // ✅ Insert file info into DB (customer_files table)
+                //  Insert file info into DB (customer_files table)
                 $stmt = $connection->prepare("INSERT INTO customer_files (customer_id, file_name, uploaded_at) VALUES (?, ?, NOW())");
                 $stmt->bind_param("is", $customer_id, $uniqueFileName);
                 $stmt->execute();
@@ -348,6 +376,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         cus_email = ?, 
         cus_phone = ?, 
         cus_ref_no = ?, 
+        emp_type = ?, 
         cus_ref = ?, 
         asset = ?, 
         image = ?,
@@ -356,7 +385,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         WHERE id = ?");
 
     // Bind the parameters correctly
-    $stmt->bind_param("sssssssssii", 
+    $stmt->bind_param("ssssssssssii", 
         $cus_name, 
         $cus_address, 
         $emp_code, 
@@ -364,6 +393,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         $cus_phone, 
         $cus_ref_no, 
         $cus_ref, 
+        $emp_type, 
         $asset, 
         $image,
         $status, 
@@ -552,6 +582,8 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
                                     }
                                     ?>
                                 </td>
+
+                               
 
                                 <td><?= $row['cus_date'] . ' by ' . $the_user; ?></td>
                                 <td><?= $row['date_updated'] . ' by ' . $the_user; ?></td>
