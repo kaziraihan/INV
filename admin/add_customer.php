@@ -27,6 +27,8 @@
 						$cus_phone			= mysqli_real_escape_string($connection, $_POST['cus_phone']);
 						$cus_ref_no		 	= mysqli_real_escape_string($connection, $_POST['cus_ref_no']);
 						$cus_contact		= mysqli_real_escape_string($connection, $_POST['cus_ref']);
+						$emp_type			= mysqli_real_escape_string($connection, $_POST['emp_type']);
+						
 
 						
 						$image 				= $_FILES['image']['name'];
@@ -34,7 +36,7 @@
 
 						move_uploaded_file($image_tmp, "img/customer/" .$image);
 
-						$query = "INSERT INTO customer (emp_code, cus_name, cus_address, cus_email, cus_phone, cus_ref_no, cus_ref, cus_date, image) VALUES ('$emp_code', '$cus_name', '$cus_address', '$cus_email', '$cus_phone', '$cus_ref_no','$cus_contact', now(), '$image') ";
+						$query = "INSERT INTO customer (emp_code, cus_name, cus_address, cus_email, cus_phone, cus_ref_no, cus_ref, emp_type, cus_date, image) VALUES ('$emp_code', '$cus_name', '$cus_address', '$cus_email', '$cus_phone', '$cus_ref_no','$emp_type','$cus_contact', now(), '$image') ";
 
 						$add_customer = mysqli_query($connection, $query);
 
@@ -96,8 +98,8 @@
 									<div class="form-group">
 										<label>Is a Manager ?</label>
 										<select name="cus_ref" class="form-control" autocomplete="off">
-											<option value="1">Yes, a Manager</option>
 											<option value="0">Not a Manager</option>
+											<option value="1">Yes, a Manager</option>
 										</select>
 									</div>
 
@@ -105,6 +107,30 @@
 										<label for="exampleFormControlFile1">Emp Photo ( only Jpg )</label>
 										<input type="file" class="form-control-file" name="image" > 
 									</div>		
+
+									<div class="form-group">
+										<label>Emp Type ( NHC Or Replacement of ) </label>
+										<select name="emp_type" class="form-control" autocomplete="off">
+											<option value="0">New HC</option>
+											<option>--Select--</option>
+											
+											<?php 
+											$query = "SELECT * FROM customer";
+											$stst = mysqli_query($connection, $query);
+											while( $row = mysqli_fetch_assoc($stst) ){
+												echo   $Id    = $row['id'];
+												$emp_code  = $row['emp_code'];
+												$cus_name  = $row['cus_name'];
+												?>  
+												<option value="<?php echo $Id; ?>"><?php if ($Id){
+													echo  $emp_code; echo '-';  echo $cus_name; } ?></option>
+												<?php } ?>                      
+											</select>
+
+
+										
+									</div>
+
 								</div>
 								<div class="col-md-12">
 									<input type="submit" name="add-customer" value="Submit" class="col-md-12 btn btn-primary btn-add-user">
