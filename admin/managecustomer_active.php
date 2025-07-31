@@ -599,6 +599,8 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         <?php if ($update_role == 1){ ?>                                            
             <a href="managecustomer_active.php?update=<?= $row['id']; ?>" class="btn btn-primary btn-sm" title="Edit">
                 <i class="fas fa-edit"></i>
+            </a>   <a href="view_emp.php?update=<?= $row['id']; ?>" class="btn btn-info btn-sm" title="view">
+               <i class="fa fa-eye"></i>
             </a>
         <?php } ?>
         <?php if ($delete_role == 1){ ?>
@@ -702,5 +704,7 @@ if (isset($_GET['delete'])) {
 </table>
 </div>
 </div>
+
+
 
 <?php include "includes/footer.php"; ?>
