@@ -36,7 +36,7 @@
 
 						move_uploaded_file($image_tmp, "img/customer/" .$image);
 
-						$query = "INSERT INTO customer (emp_code, cus_name, cus_address, cus_email, cus_phone, cus_ref_no, cus_ref, emp_type, cus_date, image) VALUES ('$emp_code', '$cus_name', '$cus_address', '$cus_email', '$cus_phone', '$cus_ref_no','$emp_type','$cus_contact', now(), '$image') ";
+						$query = "INSERT INTO customer (emp_code, cus_name, cus_address, cus_email, cus_phone, cus_ref_no, cus_ref, emp_type, cus_date, image) VALUES ('$emp_code', '$cus_name', '$cus_address', '$cus_email', '$cus_phone', '$cus_ref_no','$cus_contact','$emp_type', now(), '$image') ";
 
 						$add_customer = mysqli_query($connection, $query);
 
