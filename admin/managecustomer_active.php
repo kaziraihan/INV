@@ -137,9 +137,8 @@
 
                                   <div class="form-group col-md-4">
                                     <label>Emp type (NHC or Repl) </label>
-                                    <input type="text" name="emp_type" class="form-control" value="<?php
-                                        $emp_type = $row['emp_type']; 
-
+                                    <?php $emp_type = $row['emp_type']; 
+                                       
                                         if ($emp_type == "0") {
                                             echo "New HC";
                                         } else {
@@ -148,13 +147,19 @@
                                             $result = mysqli_query($connection, $query);
 
                                             if ($result && mysqli_num_rows($result) > 0) {
-                                                $customer = mysqli_fetch_assoc($result);
+                                                $customer = mysqli_fetch_assoc(result: $result);
                                                 echo htmlspecialchars($customer['emp_code']) . " - " . htmlspecialchars($customer['cus_name']);
                                             } else {
                                                 echo "Unknown ID ($emp_type)";
                                             }
                                         }
-                                        ?>" required>
+                                        ?>
+                                    <input type="text" name="emp_type" class="form-control" value="<?php 
+                echo htmlspecialchars($emp_type); 
+                if ($emp_type != "0" && isset($customer)) {
+                    echo ' - ' . htmlspecialchars($customer['emp_code']) . ' ' . htmlspecialchars($customer['cus_name']);
+                } 
+            ?>"   required>
                                 </div>
 
 
@@ -190,9 +195,6 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i> View uploaded files
                             </a>    
                             </div>
-
-                            
-                        
                                   
                                 <div class="form-group col-md-4">
                                     <Br/>
@@ -376,8 +378,8 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         cus_email = ?, 
         cus_phone = ?, 
         cus_ref_no = ?, 
-        emp_type = ?, 
         cus_ref = ?, 
+        emp_type = ?, 
         asset = ?, 
         image = ?,
         date_updated = NOW(), 
