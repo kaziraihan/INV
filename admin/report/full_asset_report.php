@@ -52,7 +52,7 @@
                     <th>S/N</th>
                     <th>Supplier</th>
                     <th>Remark</th>
-                   <th>Emp</th>
+                    <th>Emp</th>
                     <th>UsedBy</th>
                     <th>Dept</th>
                 </tr>
@@ -101,9 +101,32 @@
                             }
                         ?>
                         </td>
+                        <td>
+                           <?php
+                            $usedby_id = $row['usedbyid'];
+                            $emp_query = "SELECT cus_name FROM customer WHERE id = '$usedby_id'";
+                            $emp_result = mysqli_query($connection, $emp_query);
+                            if ($emp_result && mysqli_num_rows($emp_result) > 0) {
+                                $emp = mysqli_fetch_assoc($emp_result);
+                                echo  htmlspecialchars($emp['cus_name']);
+                            } else {
+                                echo "Unused";
+                            }
+                        ?></td>
+                         <td>
+                           <?php
+                            $usedby_id = $row['usedbyid'];
+                            $emp_query = "SELECT cus_address FROM customer WHERE id = '$usedby_id'";
+                            $emp_result = mysqli_query($connection, $emp_query);
+                            if ($emp_result && mysqli_num_rows($emp_result) > 0) {
+                                $emp = mysqli_fetch_assoc($emp_result);
+                                echo  htmlspecialchars($emp['cus_address']);
+                            } else {
+                                echo "Unused";
+                            }
+                        ?></td>
 
-                        <td><?php echo empty($row['Usedby']) ? 'Unused' : $row['Usedby']; ?></td>
-                       <td><?php echo empty($row['Usedby']) ? 'N/A' : $row['usedbydept']; ?></td>
+                     
                     </tr>
                 <?php } ?>
             </tbody>
