@@ -20,7 +20,7 @@
             <div class="d-flex justify-content-between align-items-center no-print">
                 <div>
                     <button onclick="window.print()" class="btn btn-success btn-sm mr-2">Print</button>
-                    <button onclick="downloadPDF()" class="btn btn-danger btn-sm">Download PDF</button>
+                 
                     <?php
                     // Create a DateTime object and set the timezone to Asia/Dhaka (UTC+6)
                     $datetime = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
@@ -91,18 +91,6 @@
             </table>
         </div>
 
-        <script>
-            function downloadPDF() {
-                const { jsPDF } = window.jspdf;
-                let doc = new jsPDF({ orientation: "landscape", format: "a3" });
-                doc.text("percentage_asset_report", 14, 15);
-                doc.autoTable({
-                    html: "#assetTable",
-                    startY: 20,
-                    theme: 'grid'
-                });
-                doc.save("percentage_asset_report.pdf");
-            }
-        </script>
+       
     </body>
     </html>

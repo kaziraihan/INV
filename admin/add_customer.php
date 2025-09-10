@@ -1,4 +1,5 @@
-<?php include "includes/header.php"; ?>
+<?php include "includes/header.php"; 
+ $created_by = $_SESSION['fname'] ;?>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -36,7 +37,7 @@
 
 						move_uploaded_file($image_tmp, "img/customer/" .$image);
 
-						$query = "INSERT INTO customer (emp_code, cus_name, cus_address, cus_email, cus_phone, cus_ref_no, cus_ref, emp_type, cus_date, image) VALUES ('$emp_code', '$cus_name', '$cus_address', '$cus_email', '$cus_phone', '$cus_ref_no','$cus_contact','$emp_type', now(), '$image') ";
+						$query = "INSERT INTO customer (emp_code, cus_name, cus_address, cus_email, cus_phone, cus_ref_no, cus_ref, emp_type, cus_date, created_by, image) VALUES ('$emp_code', '$cus_name', '$cus_address', '$cus_email', '$cus_phone', '$cus_ref_no','$cus_contact','$emp_type', now(), '$created_by','$image') ";
 
 						$add_customer = mysqli_query($connection, $query);
 

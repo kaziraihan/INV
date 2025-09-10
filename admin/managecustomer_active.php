@@ -1,11 +1,13 @@
-    <?php include "includes/header.php"; ?>
+    <?php include "includes/header.php"; 
+    $updated_by = $_SESSION['fname'] ;
+    ?>
 
 
     <?php
 // Check if the assign button is pressed
     if (isset($_GET['assign'])) {
     $cus_get_id = intval($_GET['assign']); // Sanitize ID
-
+   
     // Fetch employee details
     $stmt = $connection->prepare("SELECT * FROM customer WHERE id = ?");
     $stmt->bind_param("i", $cus_get_id);
@@ -68,7 +70,8 @@
     // Check for GET parameter to load employee data for update
     if (isset($_GET['update'])) {
     $cus_get_id = intval($_GET['update']); // Ensure ID is an integer
-
+   
+    //echo  $updated_by;
     // Prepare statement to fetch employee data
     $stmt = $connection->prepare("SELECT * FROM customer WHERE id = ?");
     $stmt->bind_param("i", $cus_get_id);
@@ -86,6 +89,7 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Update Employee Information</h6>
+                        
                     </div>
                     <div class="card-body ml-4">
                         <form action="" method="POST" enctype="multipart/form-data">
@@ -314,6 +318,7 @@ if (isset($_POST['update-customer'])) {
     $emp_type = trim($_POST['emp_type']);
     $asset = trim($_POST['asset']);
     $status = intval($_POST['status']); // Ensure status is numeric
+    
 
 if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
     $customer_id = intval($_POST['cus_id']); // Ensure it's an integer
@@ -369,7 +374,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         echo "<div class='alert alert-danger'>Invalid phone number format. Please enter a valid phone number.</div>";
         exit;
     }
-
+ 
     // Use prepared statement to update data
     $stmt = $connection->prepare("UPDATE customer SET 
         cus_name = ?, 
@@ -383,11 +388,12 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         asset = ?, 
         image = ?,
         date_updated = NOW(), 
+        updated_by = ?,
         status = ? 
         WHERE id = ?");
 
     // Bind the parameters correctly
-    $stmt->bind_param("ssssssssssii", 
+    $stmt->bind_param("sssssssssssii", 
         $cus_name, 
         $cus_address, 
         $emp_code, 
@@ -398,6 +404,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         $emp_type, 
         $asset, 
         $image,
+        $updated_by,
         $status, 
         $cus_id
     );
@@ -588,7 +595,7 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
                                
 
                                 <td><?= $row['cus_date'] . ' by ' . $the_user; ?></td>
-                                <td><?= $row['date_updated'] . ' by ' . $the_user; ?></td>
+                                <td><?= $row['date_updated'] . ' by ' .   $updated_by ?></td>
                              <td>
     <div class="btn-group">
         <?php if ($assign_role == 1){ ?>                                            
