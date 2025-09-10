@@ -123,21 +123,22 @@
                                 </div>     
                              
                                 
-                                <div class="form-group col-md-4">
-                                    <label>Status</label>
-                                    <div class="form-check">
+                                <div class="form-group col-md-4 d-flex">
+                                    <label>Status </label>
+                                    <div class="form-check m-4">
                                         <input class="form-check-input" type="radio" name="status" id="statusActive" value="1" <?= $row['status'] == '1' ? 'checked' : ''; ?>>
                                         <label class="form-check-label" for="statusActive">Active</label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check m-4 box">
                                         <input class="form-check-input" type="radio" name="status" id="statusDeactive" value="0" <?= $row['status'] == '0' ? 'checked' : ''; ?>>
                                         <label class="form-check-label" for="statusDeactive">Deactive</label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check m-4">
                                         <input class="form-check-input" type="radio" name="status" id="statusArchived" value="2" <?= $row['status'] == '2' ? 'checked' : ''; ?>>
                                         <label class="form-check-label" for="statusArchived">Archive</label>
                                     </div>
                                 </div>
+                              
 
                                   <div class="form-group col-md-4">
                                     <label>Emp type (NHC or Repl) </label>
@@ -159,12 +160,13 @@
                                         }
                                         ?>
                                     <input type="text" name="emp_type" class="form-control" value="<?php 
-                echo htmlspecialchars($emp_type); 
-                if ($emp_type != "0" && isset($customer)) {
-                    echo ' - ' . htmlspecialchars($customer['emp_code']) . ' ' . htmlspecialchars($customer['cus_name']);
-                } 
-            ?>"   required>
+                                echo htmlspecialchars($emp_type); 
+                                if ($emp_type != "0" && isset($customer)) {
+                                    echo ' - ' . htmlspecialchars($customer['emp_code']) . ' ' . htmlspecialchars($customer['cus_name']);
+                                } 
+                                 ?>"   required>
                                 </div>
+                                   
 
 
                                 <script>
@@ -173,6 +175,12 @@
                                     this.value = this.checked ? "1" : "0"; // Ensure correct value is sent in the form
                                 });
                             </script>
+                               <div class="form-group col-md-4">
+                                <label>remark</label>
+                                <textarea name="remark" class="form-control"><?= htmlspecialchars($row['remark']); ?></textarea>
+
+                            </div>
+                        
                             <div class="form-group col-md-4">
                                 <label>Emp Dept</label>
                                 <select class="form-control" name="cus_address" required>
@@ -188,7 +196,11 @@
                                             echo    $department; } ?></option>
                                         <?php } ?>                      
                                     </select>
-                                </div>
+                            </div>
+                         
+
+
+                            
 
 
                             <div class="form-group col-md-4">
@@ -197,7 +209,7 @@
                                 <br>
                                  <a href="view_gallery.php?customer_id=<?= $cus_get_id; ?>" class="btn btn-primary btn-sm">
                                 <i class="fa fa-eye" aria-hidden="true"></i> View uploaded files
-                            </a>    
+                             </a>    
                             </div>
                                   
                                 <div class="form-group col-md-4">
@@ -264,10 +276,12 @@
                                 }   
                                 echo $row['date_created'];// showing the assign date 
                             }
+
+                            
                             ?>
 
                         </div>
-
+                    
                         
                           
                            
@@ -318,6 +332,7 @@ if (isset($_POST['update-customer'])) {
     $emp_type = trim($_POST['emp_type']);
     $asset = trim($_POST['asset']);
     $status = intval($_POST['status']); // Ensure status is numeric
+    $remark = trim($_POST['remark']);
     
 
 if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
@@ -389,11 +404,13 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         image = ?,
         date_updated = NOW(), 
         updated_by = ?,
-        status = ? 
+          remark = ?,
+        status = ? ,
+      
         WHERE id = ?");
 
     // Bind the parameters correctly
-    $stmt->bind_param("sssssssssssii", 
+    $stmt->bind_param("ssssssssssssii", 
         $cus_name, 
         $cus_address, 
         $emp_code, 
@@ -405,7 +422,9 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         $asset, 
         $image,
         $updated_by,
+        $remark,
         $status, 
+      
         $cus_id
     );
 
