@@ -390,8 +390,8 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         exit;
     }
  
-    // Use prepared statement to update data
-    $stmt = $connection->prepare("UPDATE customer SET 
+   // Use prepared statement to update data
+$stmt = $connection->prepare("UPDATE customer SET 
         cus_name = ?, 
         cus_address = ?, 
         emp_code = ?, 
@@ -404,13 +404,12 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         image = ?,
         date_updated = NOW(), 
         updated_by = ?,
-          remark = ?,
-        status = ? ,
-      
-        WHERE id = ?");
+        remark = ?,
+        status = ?
+    WHERE id = ?");
 
-    // Bind the parameters correctly
-    $stmt->bind_param("ssssssssssssii", 
+// Bind the parameters correctly (14 total)
+$stmt->bind_param("ssssssssssssii", 
         $cus_name, 
         $cus_address, 
         $emp_code, 
@@ -424,9 +423,9 @@ if (isset($_FILES['image']) && isset($_POST['cus_id'])) {
         $updated_by,
         $remark,
         $status, 
-      
         $cus_id
-    );
+);
+
 
     // Execute the statement and handle success/failure
     if ($stmt->execute()) {
